@@ -1,5 +1,7 @@
 package com.example.egypt.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -7,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "quiz")
 public class Quiz {
     @Id
@@ -26,7 +29,7 @@ public class Quiz {
     private Boolean archive;
     @ManyToOne
     @JoinColumn(name = "author")
-    private User author;
+    private User quizAuthor;
 
 
     @OneToMany(mappedBy = "quiz")
@@ -51,7 +54,7 @@ public class Quiz {
         this.article = article;
         this.rating = rating;
         this.archive = archive;
-        this.author = author;
+        this.quizAuthor = author;
         this.badge = badge;
         this.articles = articles;
         this.comments = comments;
@@ -106,11 +109,11 @@ public class Quiz {
     }
 
     public User getAuthor() {
-        return author;
+        return quizAuthor;
     }
 
     public void setAuthor(User author) {
-        this.author = author;
+        this.quizAuthor = author;
     }
 
     public List<Badge> getBadge() {

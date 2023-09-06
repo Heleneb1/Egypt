@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "user")
 public class User {
@@ -43,12 +44,12 @@ public class User {
     @OneToMany(mappedBy = "author")
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "quizAuthor")
     private List<Quiz> quiz;
 
 
-    @OneToMany(mappedBy = "user")
-    private List<Badge> badge;
+//    @OneToMany(mappedBy = "user")
+//    private List<Badge> badge;
 
     public UUID getId() {
         return id;
@@ -130,13 +131,13 @@ public class User {
         this.quiz = quiz;
     }
 
-    public List<Badge> getBadge() {
-        return badge;
-    }
-
-    public void setBadge(List<Badge> badge) {
-        this.badge = badge;
-    }
+//    public List<Badge> getBadge() {
+//        return badge;
+//    }
+//
+//    public void setBadge(List<Badge> badge) {
+//        this.badge = badge;
+//    }
 
 
     public User() {
@@ -153,6 +154,6 @@ public class User {
         this.password = password;
         this.comments = comments;
         this.quiz = quiz;
-        this.badge = badge;
+//        this.badge = badge;
     }
 }
