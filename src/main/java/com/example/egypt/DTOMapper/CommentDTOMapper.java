@@ -2,12 +2,16 @@ package com.example.egypt.DTOMapper;
 
 import com.example.egypt.DTO.CommentDTO;
 import com.example.egypt.entity.Comment;
+import com.example.egypt.entity.Quiz;
+import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.util.List;
+
 import java.util.function.Function;
 
-public class CommentDTOMapper implements Function<Comment, CommentDTO> {
 
+@Service
+public class CommentDTOMapper implements Function<Comment, CommentDTO> {
 
     @Override
     public CommentDTO apply(Comment comment) {
@@ -17,16 +21,13 @@ public class CommentDTOMapper implements Function<Comment, CommentDTO> {
                 comment.getCreationDate(),
                 comment.getArchive(),
                 comment.getAuthor().getId(),
-                comment.getQuiz(),
+                (List<Quiz>) comment.getQuiz(),
                 comment.getArticle()
         );
-    }
-
-    public LocalDateTime setCreationDate(LocalDateTime localDateTimeNow) {
-        return localDateTimeNow;
     }
 
     public CommentDTO convertToDTO(Comment comment) {
         return apply(comment);
     }
+
 }

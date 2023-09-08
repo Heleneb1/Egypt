@@ -1,6 +1,8 @@
 package com.example.egypt.controller;
 
 
+import com.example.egypt.DTO.CommentDTO;
+import com.example.egypt.DTOMapper.CommentDTOMapper;
 import com.example.egypt.entity.*;
 
 import com.example.egypt.repository.ArticleRepository;
@@ -8,12 +10,14 @@ import com.example.egypt.repository.CommentRepository;
 
 import com.example.egypt.repository.QuizRepository;
 import com.example.egypt.repository.UserRepository;
+import com.example.egypt.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,27 +28,35 @@ public class CommentController {
     private UserRepository userRepository;
     private QuizRepository quizRepository;
     private ArticleRepository articleRepository;
+    private final CommentDTOMapper commentDTOMapper;
 
     CommentController(CommentRepository commentRepository,
                       UserRepository userRepository,
                       QuizRepository quizRepository,
-                      ArticleRepository articleRepository) {
+                      ArticleRepository articleRepository, CommentDTOMapper commentDTOMapper) {
         this.commentRepository = commentRepository;
         this.userRepository = userRepository;
         this.quizRepository = quizRepository;
         this.articleRepository = articleRepository;
+
+        this.commentDTOMapper = commentDTOMapper;
     }
 
     @GetMapping
-    public List<Comment> getAllComments() {
-        return this.commentRepository.findAll();
+    public List<CommentDTO> getAllComments() {
+        CommentService commentService = new CommentService(
+                commentRepository, commentDTOMapper);
+        List<CommentDTO> commentDTOS = commentService.findAll();
+        return commentDTOS;
     }
 
     @GetMapping("/{id}")
-    public Comment getById(@PathVariable UUID id) {
-        return this.commentRepository
-                .findById(id)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    public CommentDTO getById(@PathVariable UUID id) {
+        Comment comment =
+                this.commentRepository
+                        .findById(id)
+                        .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return commentDTOMapper.convertToDTO(comment);
     }
 
     @PostMapping("/{authorId}/create")
@@ -60,7 +72,8 @@ public class CommentController {
     }
 
     @PostMapping("/quizzes/{quizId}/comments")
-    public ResponseEntity<Comment> createComment(
+    @ResponseStatus(HttpStatus.CREATED)
+    public Comment createComment(
             @PathVariable UUID quizId,
             @RequestBody Comment newComment,
             @RequestParam UUID authorId) {
@@ -75,10 +88,9 @@ public class CommentController {
 
         newComment.setQuiz(quiz);
         newComment.setAuthor(author);
+        newComment.setCreationDate(LocalDateTime.now());
 
-        Comment createdComment = commentRepository.save(newComment);
-
-        return new ResponseEntity<>(createdComment, HttpStatus.CREATED);
+        return this.commentRepository.save(newComment);
     }
 
 

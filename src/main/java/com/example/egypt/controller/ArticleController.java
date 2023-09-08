@@ -8,6 +8,7 @@ import com.example.egypt.entity.Quiz;
 import com.example.egypt.repository.ArticleRepository;
 import com.example.egypt.repository.QuizRepository;
 import com.example.egypt.services.ArticleService;
+import com.example.egypt.services.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -117,15 +118,48 @@ public class ArticleController {
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Article Not Found: " + id));
 
-        // Associez le commentaire à l'article
+
         newComment.setArticle(article);
 
-        // Ajoutez le commentaire à la liste des commentaires de l'article
+
         article.getComments().add(newComment);
 
         Article updatedArticle = articleRepository.save(article);
 
         return ResponseEntity.ok(updatedArticle);
+    }
+    @PutMapping("/{id}/add-rating")
+    public ResponseEntity<ArticleDTO> addRating(
+            @PathVariable UUID id,
+            @RequestBody  List<Float> newRatings,
+            @Validated ArticleDTO addRating) {
+
+      Article article = articleRepository.findById(id)
+              .orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Article Not Found: " + id));
+
+        Float currentRating = article.getRating();
+        if (currentRating == null) {
+            currentRating = 0.0f;
+        }
+
+        Float sumOfRatings = currentRating;
+        for (Float newRating : newRatings) {
+            sumOfRatings += newRating;
+        }
+
+        Float averageRating = sumOfRatings / (newRatings.size() + 1); // +1 pour inclure la note actuelle
+
+        float roundedAverage = Math.round(averageRating * 10.0f) / 10.0f;
+
+        article.setRating(roundedAverage);
+        BeanUtils.copyNonNullProperties(addRating, article);
+
+       Article updatedArticle = articleRepository.save(article);
+       ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(updatedArticle);
+
+        return ResponseEntity.ok(updatedArticleDTO);
     }
 
     @DeleteMapping("/{id}")

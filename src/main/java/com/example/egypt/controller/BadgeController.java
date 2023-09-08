@@ -1,14 +1,12 @@
 package com.example.egypt.controller;
 
 
-import com.example.egypt.DTO.ArticleDTO;
 import com.example.egypt.DTO.BadgeDTO;
 import com.example.egypt.DTOMapper.BadgeDTOMapper;
-import com.example.egypt.entity.Article;
+
 import com.example.egypt.entity.Badge;
 import com.example.egypt.repository.BadgeRepository;
 
-import com.example.egypt.services.ArticleService;
 import com.example.egypt.services.BadgeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -40,9 +38,7 @@ public class BadgeController {
     }
 
     @GetMapping("/{id}")
-    public BadgeDTO getById(
-            @PathVariable UUID id
-    ) {
+    public BadgeDTO getById(@PathVariable UUID id) {
         Badge badge = this.badgeRepository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));

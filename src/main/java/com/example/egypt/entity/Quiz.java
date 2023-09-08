@@ -28,8 +28,8 @@ public class Quiz {
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
     private Boolean archive;
     @ManyToOne
-    @JoinColumn(name = "author")
-    private User quizAuthor;
+    @JoinColumn(name = "author_id")
+    private User author;
 
 
     @OneToMany(mappedBy = "quiz")
@@ -38,8 +38,9 @@ public class Quiz {
     private List<Article> articles;
 
 
-    @OneToMany(mappedBy = "quiz")
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
+
     @OneToMany(mappedBy = "quiz")
     private List<Rating> ratings;
 
@@ -54,7 +55,7 @@ public class Quiz {
         this.article = article;
         this.rating = rating;
         this.archive = archive;
-        this.quizAuthor = author;
+        this.author = author;
         this.badge = badge;
         this.articles = articles;
         this.comments = comments;
@@ -109,11 +110,11 @@ public class Quiz {
     }
 
     public User getAuthor() {
-        return quizAuthor;
+        return author;
     }
 
     public void setAuthor(User author) {
-        this.quizAuthor = author;
+        this.author = author;
     }
 
     public List<Badge> getBadge() {

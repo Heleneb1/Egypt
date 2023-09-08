@@ -1,6 +1,7 @@
 package com.example.egypt.services;
 
 import java.util.List;
+
 import java.util.stream.Collectors;
 
 import com.example.egypt.DTO.CommentDTO;
@@ -24,6 +25,9 @@ public class CommentService {
 
     public List<CommentDTO> findAll() {
         List<Comment> comments = commentRepository.findAll();
+
+
+
         return comments.stream()
                 .map(commentDTOMapper::convertToDTO)
                 .collect(Collectors.toList());

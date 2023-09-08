@@ -38,7 +38,8 @@ public class Article {
     public void setEditionDate(LocalDateTime editionDate) {
         this.editionDate = editionDate;
     }
-
+    @Column(nullable = true, name = "rating")
+    private Float rating;
     @Column(nullable = false, name = "tag")
     private String tag;
     @ManyToOne
@@ -59,6 +60,8 @@ public class Article {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
     private List<Comment> comments = new ArrayList<>();
 
+
+
     @OneToMany(mappedBy = "article")
     private List<Rating> ratings;
 
@@ -66,11 +69,13 @@ public class Article {
     public Article() {
     }
 
-    public Article(String title, String content, LocalDateTime creationDate, LocalDateTime editionDate, String tag, User author, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings) {
+    public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate, Float rating, String tag, User author, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;
         this.editionDate = editionDate;
+        this.rating = rating;
         this.tag = tag;
         this.author = author;
         this.quizzes = quizzes;
@@ -109,6 +114,14 @@ public class Article {
 
     public void setCreationDate(LocalDateTime creationDate) {
         this.creationDate = creationDate;
+    }
+
+    public Float getRating() {
+        return rating;
+    }
+
+    public void setRating(Float rating) {
+        this.rating = rating;
     }
 
     public String getTag() {
@@ -158,20 +171,4 @@ public class Article {
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
     }
-
-//    @Override
-//    public String toString() {
-//        return "Article{" +
-//                "id=" + id +
-//                ", title='" + title + '\'' +
-//                ", content='" + content + '\'' +
-//                ", creationDate=" + creationDate +
-//                ", tag='" + tag + '\'' +
-//                ", author='" + author + '\'' +
-//                ", quizzes=" + quizzes +
-//                ", archive=" + archive +
-//                ", comments=" + comments +
-//                ", ratings=" + ratings +
-//                '}';
-//    }
 }

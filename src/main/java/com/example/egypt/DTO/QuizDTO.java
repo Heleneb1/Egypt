@@ -9,27 +9,27 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public record ArticleDTO(
+public record QuizDTO(
         UUID id,
-        String title,
         String content,
         LocalDateTime creationDate,
-        LocalDateTime editionDate,
-        String tag,
-        User author,
-        @JsonIgnore List<Quiz> quizzes,
+        String article,
+        Float rating,
         Boolean archive,
-       @JsonIgnore List<Comment> comments,
-        Float ratings
+        UUID authorId,
+
+        @JsonIgnore List<Badge> badge,
+        @JsonIgnore List<Article> articles,
+        @JsonIgnore List<Comment> comments
 ) {
     public LocalDateTime setEditionDate(LocalDateTime localDateTimeNow) {
         return localDateTimeNow;
     }
 
 
-    public List<UUID> getQuizzesIds(List<Quiz> quizzes) {
-        return quizzes.stream()
-                .map(Quiz::getId)
+    public List<UUID> getBadgesIds(List<Badge> badge) {
+        return badge.stream()
+                .map(Badge::getId)
                 .collect(Collectors.toList());
     }
 
@@ -39,10 +39,12 @@ public record ArticleDTO(
                 .collect(Collectors.toSet());
     }
 
-//    public List<UUID> getRatingsIds(List<Rating> ratings) {
-//        return ratings.stream()
-//                .map(Rating::getId)
-//                .collect(Collectors.toList());
-//    }
-
+    public List<UUID> getRatingsIds(List<Rating> ratings) {
+        return ratings.stream()
+                .map(Rating::getId)
+                .collect(Collectors.toList());
+    }
+    public void setAuthor(UUID authorId) {
+        UUID user;
+    }
 }
