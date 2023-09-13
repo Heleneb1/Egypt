@@ -42,10 +42,8 @@ public class Article {
     private Float rating;
     @Column(nullable = false, name = "tag")
     private String tag;
-    @ManyToOne
-    @JsonIgnore
-    @JoinColumn(name = "user_id")
-    private User author;
+    @Column(nullable = false, name = "author")
+    private String author;
 
     @ManyToMany
     @JoinTable(
@@ -69,7 +67,8 @@ public class Article {
     public Article() {
     }
 
-    public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate, Float rating, String tag, User author, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings) {
+
+    public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate, Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings,String author) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -77,11 +76,11 @@ public class Article {
         this.editionDate = editionDate;
         this.rating = rating;
         this.tag = tag;
-        this.author = author;
         this.quizzes = quizzes;
         this.archive = archive;
         this.comments = comments;
         this.ratings = ratings;
+        this.author = author;
     }
 
     public UUID getId() {
@@ -132,13 +131,6 @@ public class Article {
         this.tag = tag;
     }
 
-    public User getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(User author) {
-        this.author = author;
-    }
 
     public List<Quiz> getQuizzes() {
         return quizzes;
@@ -170,5 +162,13 @@ public class Article {
 
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
     }
 }

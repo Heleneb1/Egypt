@@ -47,6 +47,18 @@ public class ArticleService {
                     .collect(Collectors.toList());
         }
 
+    public List<ArticleDTO> findByTag(String tag) {
+        List<Article> articles = articleRepository.findArticlesByTagContainingIgnoreCase(tag);
+        return articles.stream()
+                .map(articleDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
+    public List<ArticleDTO> findByTitle(String title) {
+        List<Article> articles = articleRepository.findByTitleContainingIgnoreCase(title);
+        return articles.stream()
+                .map(articleDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
     public List<ArticleDTO> findAllArticles() {
             List<Article> articles=articleRepository.findAll();
