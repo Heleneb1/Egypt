@@ -5,12 +5,15 @@ import com.example.egypt.DTOMapper.ArticleDTOMapper;
 import com.example.egypt.entity.Article;
 import com.example.egypt.entity.Comment;
 import com.example.egypt.entity.Quiz;
+import com.example.egypt.entity.User;
 import com.example.egypt.repository.ArticleRepository;
 import com.example.egypt.repository.QuizRepository;
+import com.example.egypt.repository.UserRepository;
 import com.example.egypt.services.ArticleService;
 import com.example.egypt.services.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -19,6 +22,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
+
+
 @RestController
 @RequestMapping("/articles")
 public class ArticleController {
@@ -26,11 +31,16 @@ public class ArticleController {
 
     private ArticleRepository articleRepository;
     private QuizRepository quizRepository;
+    private UserRepository userRepository;
     private final ArticleDTOMapper articleDTOMapper;
 
-    ArticleController(ArticleRepository articleRepository, QuizRepository quizRepository, ArticleDTOMapper articleDTOMapper) {
+    ArticleController(ArticleRepository articleRepository,
+                      QuizRepository quizRepository,
+                      UserRepository userRepository,
+                      ArticleDTOMapper articleDTOMapper) {
         this.articleRepository = articleRepository;
         this.quizRepository = quizRepository;
+        this.userRepository = userRepository;
         this.articleDTOMapper = articleDTOMapper;
     }
 
@@ -63,6 +73,20 @@ public class ArticleController {
         List<ArticleDTO> articles = articleService.findByAuthor(author);
         return articles;
     }
+    @GetMapping("/byTag/{tag}")
+    public List<ArticleDTO> getByTag(@PathVariable String tag) {
+        ArticleService articleService = new ArticleService(
+                articleRepository, articleDTOMapper, quizRepository);
+        List<ArticleDTO> articles = articleService.findByTag(tag);
+        return articles;
+    }
+    @GetMapping("/byTitle/{title}")
+    public List<ArticleDTO> getByTitle(@PathVariable String title) {
+        ArticleService articleService = new ArticleService(
+                articleRepository, articleDTOMapper, quizRepository);
+        List<ArticleDTO> articles = articleService.findByTitle(title);
+        return articles;
+    }
 
     @GetMapping("/byQuiz/{quizId}")
     public List<ArticleDTO> getArticlesByQuiz(@PathVariable UUID quizId) {
@@ -74,13 +98,25 @@ public class ArticleController {
 
 
     @PostMapping("/create")
-    public Article create(@RequestBody Article newArticle) {
+    @ResponseStatus(HttpStatus.CREATED)
+    public Article create(@PathVariable UUID userId, @RequestBody Article newArticle) {
+        User user = userRepository
+                .findById(userId)
+                .orElseThrow(
+                        () -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Not Found" + userId));
 
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         newArticle.setEditionDate(localDateTimeNow);
         return this.articleRepository.save(newArticle);
     }
-
+//@PostMapping("/create")
+//@PreAuthorize("hasRole('ADMIN')")
+//public Article create(@RequestBody Article newArticle) {
+//    LocalDateTime localDateTimeNow = LocalDateTime.now();
+//    newArticle.setEditionDate(localDateTimeNow);
+//    return this.articleRepository.save(newArticle);
+//}
     @PutMapping("/{id}")
     public Article update(@RequestBody Article articleUpdated) {
         return this.articleRepository.save(articleUpdated);
