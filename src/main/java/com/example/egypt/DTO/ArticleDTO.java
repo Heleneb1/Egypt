@@ -16,7 +16,7 @@ public record ArticleDTO(
         LocalDateTime creationDate,
         LocalDateTime editionDate,
         String tag,
-        User author,
+        String author,
         @JsonIgnore List<Quiz> quizzes,
         Boolean archive,
        @JsonIgnore List<Comment> comments,
