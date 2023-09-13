@@ -1,10 +1,13 @@
 package com.example.egypt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -13,6 +16,7 @@ import java.util.UUID;
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "article")
 public class Article {
+
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
@@ -24,10 +28,25 @@ public class Article {
     private String content;
     @Column(nullable = true, name = "creation_date")
     private LocalDateTime creationDate;
+    @Column(nullable = true, name = "edition_date")
+    private LocalDateTime editionDate;
+
+    public LocalDateTime getEditionDate() {
+        return editionDate;
+    }
+
+    public void setEditionDate(LocalDateTime editionDate) {
+        this.editionDate = editionDate;
+    }
+    @Column(nullable = true, name = "rating")
+    private Float rating;
     @Column(nullable = false, name = "tag")
     private String tag;
-    @Column(nullable = true, name = "author")
-    private String author;
+    @ManyToOne
+    @JsonIgnore
+    @JoinColumn(name = "user_id")
+    private User author;
+
     @ManyToMany
     @JoinTable(
             name = "article_quiz",
@@ -36,10 +55,13 @@ public class Article {
     )
     private List<Quiz> quizzes;
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
-    private Boolean archive;
+    private Boolean archive = false;
 
-    @OneToMany(mappedBy = "article")
-    private List<Comment> comments;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+    private List<Comment> comments = new ArrayList<>();
+
+
+
     @OneToMany(mappedBy = "article")
     private List<Rating> ratings;
 
@@ -47,14 +69,19 @@ public class Article {
     public Article() {
     }
 
-    public Article(String title, String content, LocalDateTime creationDate, String tag, String author, Boolean archive) {
-
+    public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate, Float rating, String tag, User author, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings) {
+        this.id = id;
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;
+        this.editionDate = editionDate;
+        this.rating = rating;
         this.tag = tag;
         this.author = author;
+        this.quizzes = quizzes;
         this.archive = archive;
+        this.comments = comments;
+        this.ratings = ratings;
     }
 
     public UUID getId() {
@@ -89,6 +116,14 @@ public class Article {
         this.creationDate = creationDate;
     }
 
+    public Float getRating() {
+        return rating;
+    }
+
+    public void setRating(Float rating) {
+        this.rating = rating;
+    }
+
     public String getTag() {
         return tag;
     }
@@ -97,11 +132,11 @@ public class Article {
         this.tag = tag;
     }
 
-    public String getAuthor() {
+    public User getAuthor() {
         return author;
     }
 
-    public void setAuthor(String author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
@@ -135,21 +170,5 @@ public class Article {
 
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
-    }
-
-    @Override
-    public String toString() {
-        return "Article{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", content='" + content + '\'' +
-                ", creationDate=" + creationDate +
-                ", tag='" + tag + '\'' +
-                ", author='" + author + '\'' +
-                ", quizzes=" + quizzes +
-                ", archive=" + archive +
-                ", comments=" + comments +
-                ", ratings=" + ratings +
-                '}';
     }
 }
