@@ -73,6 +73,15 @@ public class ArticleController {
         List<ArticleDTO> articles = articleService.findByAuthor(author);
         return articles;
     }
+    @GetMapping("/search")
+    public List<ArticleDTO>searchArticle (@RequestParam(required = false) String title,
+    @RequestParam(required = false) String author,
+    @RequestParam(required = false) String tag) {
+ArticleService articleService = new ArticleService(articleRepository, articleDTOMapper, quizRepository);
+        List<ArticleDTO> articles =  articleService.searchArticleByTitleOrAuthorOrTag(title, author, tag);
+
+        return articles;
+    }
     @GetMapping("/byTag/{tag}")
     public List<ArticleDTO> getByTag(@PathVariable String tag) {
         ArticleService articleService = new ArticleService(
@@ -185,7 +194,7 @@ public class ArticleController {
             sumOfRatings += newRating;
         }
 
-        Float averageRating = sumOfRatings / (newRatings.size() + 1); // +1 pour inclure la note actuelle
+        Float averageRating = sumOfRatings / (newRatings.size() + 1); // +1 pour inclure la note actuelle./
 
         float roundedAverage = Math.round(averageRating * 10.0f) / 10.0f;
 
