@@ -11,41 +11,43 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+
 @Service
 public class ArticleService {
 
-        private static ArticleRepository articleRepository;
-        private static ArticleDTOMapper articleDTOMapper;
-        private final QuizRepository quizRepository;
+    private static ArticleRepository articleRepository;
+    private static ArticleDTOMapper articleDTOMapper;
+    private final QuizRepository quizRepository;
 
 
-        public ArticleService(ArticleRepository articleRepository,
-                              ArticleDTOMapper articleDTOMapper,
-                              QuizRepository quizRepository) {
-            this.articleRepository = articleRepository;
-            this.articleDTOMapper = articleDTOMapper;
-            this.quizRepository = quizRepository;
-        }
+    public ArticleService(ArticleRepository articleRepository,
+                          ArticleDTOMapper articleDTOMapper,
+                          QuizRepository quizRepository) {
+        this.articleRepository = articleRepository;
+        this.articleDTOMapper = articleDTOMapper;
+        this.quizRepository = quizRepository;
+    }
 
-        public static Optional<ArticleDTO> findById(UUID id) {
-            return articleRepository.findById(id)
-                    .map(articleDTOMapper::convertToDTO);
-        }
+    public static Optional<ArticleDTO> findById(UUID id) {
+        return articleRepository.findById(id)
+                .map(articleDTOMapper::convertToDTO);
+    }
 
 
-        public List<ArticleDTO> findByQuiz(UUID quizId) {
-            List<Article> articles = articleRepository.findByQuizzesId(quizId);
-            return articles.stream()
-                    .map(articleDTOMapper::convertToDTO)
-                    .collect(Collectors.toList());
-        }
+    public List<ArticleDTO> findByQuiz(UUID quizId) {
+        List<Article> articles = articleRepository.findByQuizzesId(quizId);
+        return articles.stream()
+                .map(articleDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
-        public List<ArticleDTO> findByAuthor(String author) {
-            List<Article> articles = articleRepository.findArticlesByAuthorContaining(author);
-            return articles.stream()
-                    .map(articleDTOMapper::convertToDTO)
-                    .collect(Collectors.toList());
-        }
+    public List<ArticleDTO> findByAuthor(String author) {
+        List<Article> articles = articleRepository.findArticlesByAuthorContaining(author);
+        return articles.stream()
+                .map(articleDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
 
     public List<ArticleDTO> findByTag(String tag) {
         List<Article> articles = articleRepository.findArticlesByTagContainingIgnoreCase(tag);
@@ -53,6 +55,7 @@ public class ArticleService {
                 .map(articleDTOMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
+
     public List<ArticleDTO> findByTitle(String title) {
         List<Article> articles = articleRepository.findByTitleContainingIgnoreCase(title);
         return articles.stream()
@@ -60,11 +63,18 @@ public class ArticleService {
                 .collect(Collectors.toList());
     }
 
+    public List<ArticleDTO> searchArticleByTitleOrAuthorOrTag(String title, String author, String tag) {
+        List<Article> articles = articleRepository.findArticleByTitleOrAuthorOrTagIsContainingIgnoreCase(title, author, tag);
+        return articles.stream()
+                .map(articleDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
+
     public List<ArticleDTO> findAllArticles() {
-            List<Article> articles=articleRepository.findAll();
-            return articles.stream()
-                    .map(articleDTOMapper::convertToDTO)
-                    .collect(Collectors.toList());
+        List<Article> articles = articleRepository.findAll();
+        return articles.stream()
+                .map(articleDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
     }
 
 }
