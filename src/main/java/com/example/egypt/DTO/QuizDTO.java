@@ -12,13 +12,15 @@ import java.util.stream.Collectors;
 public record QuizDTO(
         UUID id,
         String content,
+        String title,
+        String difficulty,
         LocalDateTime creationDate,
         String article,
+        String picture,
         Float rating,
         Boolean archive,
-        UUID authorId,
-
-        @JsonIgnore List<Badge> badge,
+        User author,
+        @JsonIgnore List<Badge>badge,
         @JsonIgnore List<Article> articles,
         @JsonIgnore List<Comment> comments
 ) {
@@ -44,6 +46,7 @@ public record QuizDTO(
                 .map(Rating::getId)
                 .collect(Collectors.toList());
     }
+
     public void setAuthor(UUID authorId) {
         UUID user;
     }

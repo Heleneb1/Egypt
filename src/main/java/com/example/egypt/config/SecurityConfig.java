@@ -56,22 +56,6 @@ public class SecurityConfig  {
 
 
     }
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//        http.csrf(AbstractHttpConfigurer::disable)
-//                .cors(Customizer.withDefaults())
-//                .authorizeRequests(authorize -> {
-//                    authorize
-//                            .requestMatchers(new AntPathRequestMatcher("/api/auth/*", "/contact")).permitAll();
-//
-//                    authorize.requestMatchers("/admin/**").hasRole("ADMIN");
-//                    authorize.requestMatchers("/user/**").hasRole("USER");
-//                })
-//                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
-//
-//        return http.build();
-//    }
 
     @Bean
     public JwtEncoder jwtEncoder() {

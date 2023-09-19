@@ -16,19 +16,19 @@ public record CommentDTO(
         LocalDateTime creationDate,
         Boolean archive,
         UUID author,
-        @JsonIgnore List<Quiz> quizzes,
+        @JsonIgnore Quiz quizzes,
         Article article) {
 
 
-    public List<UUID> getQuizzesIds() {
-        if (quizzes != null) {
-            return quizzes.stream()
-                    .map(Quiz::getId)
-                    .collect(Collectors.toList());
-        } else {
-            return Collections.emptyList();
-        }
-    }
+//    public List<UUID> getQuizzesIds() {
+//        if (quizzes != null) {
+//            return quizzes.stream()
+//                    .map(Quiz::getId)
+//                    .collect(Collectors.toList());
+//        } else {
+//            return Collections.emptyList();
+//        }
+//    }
 
 
 }

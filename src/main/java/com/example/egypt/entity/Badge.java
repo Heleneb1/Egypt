@@ -24,9 +24,9 @@ public class Badge {
     private Quiz quiz;
 
 
-//    @ManyToOne
-//    @JoinColumn(name = "user_id")
-//    private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 
 
@@ -39,13 +39,13 @@ public class Badge {
         this.description = description;
         this.image = image;
     }
-//    public User getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(User user) {
-//        this.user = user;
-//    }
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
     public Quiz getQuiz() {
         return quiz;
     }

@@ -19,10 +19,16 @@ public class Quiz {
     @Lob
     @Column(nullable = false, name = "content", length = 1000)
     private String content;
+    @Column(nullable = false, name = "title")
+    private String title;
+    @Column(nullable = false, name = "difficulty")
+    private String difficulty;
     @Column(nullable = false, name = "creation_date")
     private LocalDateTime creationDate;
-    @Column(nullable = false, name = "article")
+    @Column(nullable = true, name = "article")
     private String article;
+    @Column(nullable = true, name = "picture")
+    private String picture;
     @Column(nullable = true, name = "rating")
     private Float rating;
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
@@ -48,17 +54,22 @@ public class Quiz {
     public Quiz() {
     }
 
-    public Quiz(UUID id, String content, LocalDateTime creationDate, String article, Float rating, Boolean archive, User author, List<Badge> badge, List<Article> articles, List<Comment> comments) {
+
+    public Quiz(UUID id, String content, String title, String difficulty, LocalDateTime creationDate, String article, String picture, Float rating, Boolean archive, User author, List<Badge> badge, List<Article> articles, List<Comment> comments, List<Rating> ratings) {
         this.id = id;
         this.content = content;
+        this.title = title;
+        this.difficulty = difficulty;
         this.creationDate = creationDate;
         this.article = article;
+        this.picture = picture;
         this.rating = rating;
         this.archive = archive;
         this.author = author;
         this.badge = badge;
         this.articles = articles;
         this.comments = comments;
+        this.ratings = ratings;
     }
 
     public UUID getId() {
@@ -77,6 +88,22 @@ public class Quiz {
         this.content = content;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
+
     public LocalDateTime getCreationDate() {
         return creationDate;
     }
@@ -91,6 +118,14 @@ public class Quiz {
 
     public void setArticle(String article) {
         this.article = article;
+    }
+
+    public String getPicture() {
+        return picture;
+    }
+
+    public void setPicture(String picture) {
+        this.picture = picture;
     }
 
     public Float getRating() {

@@ -41,7 +41,7 @@ public class QuizController {
         this.quizDTOMapper = quizDTOMapper;
     }
 
-    @GetMapping
+    @GetMapping("")
     public List<QuizDTO> getAllQuizzes() {
         QuizService quizService = new QuizService(
                 quizRepository, quizDTOMapper
@@ -87,6 +87,7 @@ public class QuizController {
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         newQuiz.setCreationDate(localDateTimeNow);
         newQuiz.setAuthor(user);
+        newQuiz.setArchive(false);
         newQuiz.setContent(newQuiz.getContent());
         return this.quizRepository.save(newQuiz);
     }
