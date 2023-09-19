@@ -1,8 +1,12 @@
 package com.example.egypt.controller;
 
+import com.example.egypt.DTO.UserDTO;
+import com.example.egypt.DTOMapper.UserDTOMapper;
 import com.example.egypt.entity.User;
 import com.example.egypt.repository.UserRepository;
 
+import com.example.egypt.services.BeanUtils;
+import com.example.egypt.services.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -23,18 +27,25 @@ import java.util.*;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserDTOMapper userDTOMapper;
     private static final String AVATAR_FOLDER = "src/main/resources/static/avatars/";
 
-    UserController(UserRepository userRepository) {
+    UserController(UserRepository userRepository,
+                   UserDTOMapper userDTOMapper) {
         this.userRepository = userRepository;
+        this.userDTOMapper= userDTOMapper;
     }
 
-    @GetMapping
-    public List<User> getAllUsers() {
-        return this.userRepository.findAll();
-    }
-
+//    @GetMapping("/{id}")
+//    public UserDTO getUserById(@PathVariable UUID id) {
+//        Optional<UserDTO> optionalUserDTO = UserService.findUserById(id);
+//        if (optionalUserDTO.isPresent()) {
+//            return optionalUserDTO.get();
+//        } else {
+//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found " + id);
+//        }
+//    }
     @GetMapping("/{id}")
     public User getById(@PathVariable UUID id) {
         return this.userRepository
@@ -42,17 +53,46 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+    @GetMapping("")
+    public List<UserDTO> getAllUsers() {
+        UserService userService = new UserService(userRepository, userDTOMapper);
+        List<UserDTO> userDTOs = userService.findAllUsers();
+        return userDTOs;
+    }
      @PostMapping
     public ResponseEntity<User> createUser(@RequestBody @Validated User user) {
         User createdUser = userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    @PutMapping("/{id}")
-    public User update(@PathVariable UUID id, @RequestBody User userUpdated) {
-        userUpdated.setId(id);
-        return this.userRepository.save(userUpdated);
-    }
+//    @PutMapping("/{id}")
+//    public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
+//                                              @RequestBody @Validated User userDTO) {
+//        User updatedUser = userRepository.findById(id)
+//                .orElseThrow(() -> new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, "Promotion not found: " + id));
+//
+//        BeanUtils.copyNonNullProperties(userDTO, updatedUser);
+//        User savedUser = userRepository.save(updatedUser);
+//
+//        UserDTO updatedPromotionDTO = userDTOMapper.convertToDTO(savedUser);
+//        return ResponseEntity.ok(updatedPromotionDTO);
+//
+//    }
+@PutMapping("/{id}")
+public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
+                                          @RequestBody @Validated User userDTO) {
+    User updatedUser = userRepository.findById(id)
+            .orElseThrow(() -> new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "User not found: " + id));
+
+    BeanUtils.copyNonNullProperties(userDTO, updatedUser);
+    User savedUser = userRepository.save(updatedUser);
+
+    UserDTO updatedUserDTO = userDTOMapper.convertToDTO(savedUser);
+    return ResponseEntity.ok(updatedUserDTO);
+}
+
     @PutMapping("/{userId}/avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatar) {
         try {

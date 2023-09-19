@@ -10,54 +10,56 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 
 @Entity
-
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "user")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
-    @Column(nullable = true, name = "avatar")
+
+    @Column(name = "avatar")
     private String avatar;
 
-    @Column(nullable = true, name = "biography")
+    @Column(name = "biography")
     private String biography;
-    @Column(nullable = false, name = "lastname")
+
+    @Column(name = "lastname", nullable = false)
     private String lastname;
 
-    @Column(nullable = true, name = "firstname")
+    @Column(name = "firstname")
     private String firstname;
 
-
-    @Column(nullable = false, name = "role")
     @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
 
-   private Role role;
-
-        @Email(message = "Email should be valid")
-    @Column(nullable = false, unique = true, name = "email")
+    @Email(message = "L'adresse e-mail doit être valide")
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-   @Size(min = 8, message = "Password should have at least 8 characters")
-    @Column(nullable = false, name = "password")
+    @Size(min = 8, message = "Le mot de passe doit contenir au moins 8 caractères")
+    @Column(name = "password", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
+
     @OneToMany(mappedBy = "author")
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "author")
-    private List<Quiz> quiz;
+    private List<Quiz> quizzes;
 
-
-
+    @OneToMany(mappedBy = "user")
+    private List<Badge> badges;
 
     public User() {
     }
 
-    public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email, String password, List<Comment> comments, List<Quiz> quiz, List<Badge> badge) {
+    public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email, String password, List<Comment> comments, List<Quiz> quizzes, List<Badge> badges) {
         this.id = id;
         this.avatar = avatar;
         this.biography = biography;
@@ -67,14 +69,9 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.comments = comments;
-        this.quiz = quiz;
-//        this.badge = badge;
+        this.quizzes = quizzes;
+        this.badges = badges;
     }
-
-//    @OneToMany(mappedBy = "user")
-//    private List<Badge> badge;
-public <E> User(String mail, String password, Set<E> user) {
-}
 
     public UUID getId() {
         return id;
@@ -134,7 +131,7 @@ public <E> User(String mail, String password, Set<E> user) {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List .of(new SimpleGrantedAuthority(role.name())) ;
+        return List.of(new SimpleGrantedAuthority(role.name()));
     }
 
     public String getPassword() {
@@ -178,21 +175,19 @@ public <E> User(String mail, String password, Set<E> user) {
         this.comments = comments;
     }
 
-    public List<Quiz> getQuiz() {
-        return quiz;
+    public List<Quiz> getQuizzes() {
+        return quizzes;
     }
 
-    public void setQuiz(List<Quiz> quiz) {
-        this.quiz = quiz;
+    public void setQuizzes(List<Quiz> quizzes) {
+        this.quizzes = quizzes;
     }
 
-//    public List<Badge> getBadge() {
-//        return badge;
-//    }
-//
-//    public void setBadge(List<Badge> badge) {
-//        this.badge = badge;
-//    }
+    public List<Badge> getBadges() {
+        return badges;
+    }
 
-
+    public void setBadges(List<Badge> badges) {
+        this.badges = badges;
+    }
 }
