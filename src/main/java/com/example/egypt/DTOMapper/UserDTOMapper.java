@@ -16,9 +16,8 @@ public class UserDTOMapper implements Function<User, UserDTO> {
                 user.getBiography(),
                 user.getLastname(),
                 user.getFirstname(),
-                user.getRole(), // Remarquez le changement ici
-                user.getEmail(), // Remarquez le changement ici
-//                user.getPassword(), // Remarquez le changement ici
+                user.getRole(),
+                user.getEmail(),
                 user.getComments(),
                 user.getQuizzes(),
                 user.getBadges()
@@ -28,4 +27,5 @@ public class UserDTOMapper implements Function<User, UserDTO> {
     public  UserDTO convertToDTO(User user) {
         return apply (user);
     }
+
 }

@@ -75,7 +75,6 @@
             <scope>test</scope>
         </dependency>
 
-    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-oauth2-resource-server -->
 
     <dependency>
         <groupId>com.h2database</groupId>
@@ -100,8 +99,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
-                    <mainClass>com.example.egypt.ApiApplication</mainClass> <!-- Specify your main class here -->
+                    <mainClass>com.example.egypt.EgyptApplication</mainClass>
                 </configuration>
+
             </plugin>
 
         </plugins>
