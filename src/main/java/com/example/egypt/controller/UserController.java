@@ -11,6 +11,8 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -25,6 +27,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 @RestController
+
 @RequestMapping("/users")
 public class UserController {
     private final UserRepository userRepository;
@@ -34,7 +37,7 @@ public class UserController {
     UserController(UserRepository userRepository,
                    UserDTOMapper userDTOMapper) {
         this.userRepository = userRepository;
-        this.userDTOMapper= userDTOMapper;
+        this.userDTOMapper = userDTOMapper;
     }
 
 //    @GetMapping("/{id}")
@@ -46,6 +49,7 @@ public class UserController {
 //            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found " + id);
 //        }
 //    }
+
     @GetMapping("/{id}")
     public User getById(@PathVariable UUID id) {
         return this.userRepository
@@ -59,13 +63,14 @@ public class UserController {
         List<UserDTO> userDTOs = userService.findAllUsers();
         return userDTOs;
     }
-     @PostMapping
+
+    @PostMapping
     public ResponseEntity<User> createUser(@RequestBody @Validated User user) {
         User createdUser = userRepository.save(user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-//    @PutMapping("/{id}")
+    //    @PutMapping("/{id}")
 //    public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
 //                                              @RequestBody @Validated User userDTO) {
 //        User updatedUser = userRepository.findById(id)
@@ -79,19 +84,36 @@ public class UserController {
 //        return ResponseEntity.ok(updatedPromotionDTO);
 //
 //    }
-@PutMapping("/{id}")
-public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
-                                          @RequestBody @Validated User userDTO) {
-    User updatedUser = userRepository.findById(id)
-            .orElseThrow(() -> new ResponseStatusException(
-                    HttpStatus.NOT_FOUND, "User not found: " + id));
+    @PutMapping("/{id}")
+    public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
+                                              @RequestBody @Validated User userDTO) {
+        User updatedUser = userRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found: " + id));
 
-    BeanUtils.copyNonNullProperties(userDTO, updatedUser);
-    User savedUser = userRepository.save(updatedUser);
+        BeanUtils.copyNonNullProperties(userDTO, updatedUser);
+        User savedUser = userRepository.save(updatedUser);
 
-    UserDTO updatedUserDTO = userDTOMapper.convertToDTO(savedUser);
-    return ResponseEntity.ok(updatedUserDTO);
-}
+        UserDTO updatedUserDTO = userDTOMapper.convertToDTO(savedUser);
+        return ResponseEntity.ok(updatedUserDTO);
+    }
+
+    //Todo revoir
+
+//    @PutMapping("/{userId}")
+//    public ResponseEntity<String> updateBio(@AuthenticationPrincipal UserDetails userDetails, @RequestBody String newBio, @PathVariable UUID userId) {
+//        if (userDetails == null) {
+//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Vous devez être connecté pour modifier votre biographie.");
+//        } Optional<User> userOptional = userRepository.findById(userId);
+//        if (userOptional.isPresent()) {
+//            User user = userOptional.get();
+//            user.setBiography(newBio);
+//            userRepository.save(user);
+//            return ResponseEntity.ok("Bio mise à jour avec succès !");
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
 
     @PutMapping("/{userId}/avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatar) {

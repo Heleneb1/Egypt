@@ -1,14 +1,18 @@
 package com.example.egypt.DTO;
 
+import com.example.egypt.config.GrantedAuthoritySerializer;
 import com.example.egypt.entity.Badge;
 import com.example.egypt.entity.Comment;
 import com.example.egypt.entity.Quiz;
 import com.example.egypt.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+
 
 public record UserDTO(UUID id,
                       String avatar,
@@ -18,6 +22,7 @@ public record UserDTO(UUID id,
                       Role role,
                       String email,
 //                      String password,
+
                       @JsonIgnore List<Comment> comments,
                       @JsonIgnore List<Quiz> quiz,
                       @JsonIgnore List<Badge> badge) {

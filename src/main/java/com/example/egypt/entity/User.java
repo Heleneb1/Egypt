@@ -1,25 +1,29 @@
 package com.example.egypt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
+
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
+
 @Entity
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "user")
 public class User implements UserDetails {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @Column(name = "avatar")
@@ -27,6 +31,7 @@ public class User implements UserDetails {
 
     @Column(name = "biography")
     private String biography;
+
 
     @Column(name = "lastname", nullable = false)
     private String lastname;
@@ -71,6 +76,8 @@ public class User implements UserDetails {
         this.comments = comments;
         this.quizzes = quizzes;
         this.badges = badges;
+    }
+    public <E> User(String email, String password, Set<E> user) {
     }
 
     public UUID getId() {
@@ -131,16 +138,16 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(this.role);
     }
-
+    @Override
     public String getPassword() {
         return password;
     }
 
     @Override
     public String getUsername() {
-        return email;
+        return this.getEmail();
     }
 
     @Override

@@ -50,11 +50,8 @@ public class QuizController {
         return quizDTOS;
     }
 
-    @GetMapping("/{id}/{userId}")
-    public QuizDTO getById(@PathVariable UUID id, @PathVariable UUID userId) {
-        User author = userRepository.findById(userId)
-                .orElseThrow(() -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Author not found: " + userId));
+    @GetMapping("/{id}")
+    public QuizDTO getById(@PathVariable UUID id) {
 
         Quiz quiz = this.quizRepository
                 .findById(id)
