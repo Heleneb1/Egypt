@@ -32,24 +32,24 @@ public record QuizDTO(
     }
 
 
-    public List<UUID> getBadgesIds(List<Badge> badge) {
+    public List<UUID> getBadgesIds() {
         return badge.stream()
                 .map(Badge::getId)
                 .collect(Collectors.toList());
     }
 
-    public Set<UUID> getCommentsIds(Set<Comment> comments) {
+    public List<UUID> getCommentsIds() {
         return comments.stream()
                 .map(Comment::getId)
-                .collect(Collectors.toSet());
-    }
-
-    public List<UUID> getRatingsIds(List<Rating> ratings) {
-        return ratings.stream()
-                .map(Rating::getId)
                 .collect(Collectors.toList());
     }
-    public List<UUID> getQuestionsIds(List<Question> questions) {
+
+//    public List<UUID> getRatingsIds() {
+//        return rating.stream()
+//                .map(Rating::getId)
+//                .collect(Collectors.toList());
+//    }
+    public List<UUID> getQuestionsIds() {
         return questions.stream()
                 .map(Question::getId)
                 .collect(Collectors.toList());
