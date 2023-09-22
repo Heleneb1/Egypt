@@ -1,15 +1,13 @@
 package com.example.egypt.repository;
 
-
-import com.example.egypt.entity.Quiz;
+import com.example.egypt.entity.Question;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.UUID;
 @Repository
-public interface QuizRepository extends JpaRepository<Quiz, UUID> {
+public interface QuestionRepository extends JpaRepository<Question, UUID> {
 
-        List<Quiz> findByAuthorId(UUID authorId);
-
+    List<Question> findByCategoryContaining(String category);
 }

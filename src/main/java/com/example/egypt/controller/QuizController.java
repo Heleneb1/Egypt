@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,26 +26,31 @@ public class QuizController {
     private BadgeRepository badgeRepository;
     private CommentRepository commentRepository;
     private ArticleRepository articleRepository;
+    private QuizService quizService;
     private static QuizDTOMapper quizDTOMapper;
+    private QuestionRepository questionRepository;
 
     QuizController(QuizRepository quizRepository,
                    UserRepository userRepository,
                    BadgeRepository badgeRepository,
                    CommentRepository commentRepository,
                    ArticleRepository articleRepository,
-                   QuizDTOMapper quizDTOMapper) {
+                   QuizService quizService,
+                   QuizDTOMapper quizDTOMapper, QuestionRepository questionRepository) {
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
         this.badgeRepository = badgeRepository;
         this.commentRepository = commentRepository;
         this.articleRepository = articleRepository;
         this.quizDTOMapper = quizDTOMapper;
+        this.quizService =quizService;
+        this.questionRepository=questionRepository;
     }
 
     @GetMapping("")
     public List<QuizDTO> getAllQuizzes() {
         QuizService quizService = new QuizService(
-                quizRepository, quizDTOMapper
+                quizRepository, quizDTOMapper, questionRepository
         );
         List<QuizDTO> quizDTOS = quizService.findAll();
         return quizDTOS;
@@ -88,6 +94,14 @@ public class QuizController {
         newQuiz.setContent(newQuiz.getContent());
         return this.quizRepository.save(newQuiz);
     }
+//    @PostMapping("/create/add-question")
+//    public Quiz createQuizAddQuestion(@RequestParam String category, @RequestBody Quiz newQuiz){
+//        newQuiz = quizService.createQuizAndQuestion(category);
+//        LocalDateTime localDateTimeNow = LocalDateTime.now();
+//        newQuiz.setCreationDate(localDateTimeNow);
+//        newQuiz.setArchive(false);
+//        return this.quizRepository.save(newQuiz);
+//    }
 
     @PutMapping("/{id}/badges/{badgeId}/add-badges")
     public ResponseEntity<Quiz> addBadge(
@@ -166,6 +180,35 @@ public class QuizController {
 
         quiz.setRating(newRating);
 
+        Quiz updatedQuiz = quizRepository.save(quiz);
+
+        return ResponseEntity.ok(updatedQuiz);
+    }
+
+
+    @PostMapping("/{id}/add-questions")
+    public ResponseEntity<Quiz> addQuestionsByCategory(
+            @PathVariable UUID id,
+            @RequestParam String category) {
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(
+                        () -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Quiz Not Found: " + id));
+
+        // Récupérez les questions de la base de données en fonction de la catégorie
+        List<Question> questionsToAdd = questionRepository.findByCategoryContaining(category);
+
+        // Ajoutez les questions récupérées au quiz existant
+        List<Question> currentQuestions = quiz.getQuestions();
+        if (currentQuestions == null) {
+            currentQuestions = new ArrayList<>();
+        }
+        currentQuestions.addAll(questionsToAdd);
+
+        // Mettez à jour la liste de questions du quiz
+        quiz.setQuestions(currentQuestions);
+
+        // Sauvegardez le quiz mis à jour dans la base de données
         Quiz updatedQuiz = quizRepository.save(quiz);
 
         return ResponseEntity.ok(updatedQuiz);

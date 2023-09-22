@@ -28,7 +28,8 @@ public class QuizDTOMapper implements Function<Quiz, QuizDTO> {
 //                quiz.getAuthor() == null ? null : quiz.getAuthor().getId(), //en cas d'auteur null pour eviter nullPointerException
                 quiz.getBadge(),
                 quiz.getArticles(),
-                quiz.getComments()
+                quiz.getComments(),
+                quiz.getQuestions()
         );
     }
 
