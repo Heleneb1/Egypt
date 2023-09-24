@@ -1,6 +1,6 @@
 package com.example.egypt.DTO;
 
-import com.example.egypt.config.GrantedAuthoritySerializer;
+//import com.example.egypt.config.GrantedAuthoritySerializer;
 import com.example.egypt.entity.Badge;
 import com.example.egypt.entity.Comment;
 import com.example.egypt.entity.Quiz;

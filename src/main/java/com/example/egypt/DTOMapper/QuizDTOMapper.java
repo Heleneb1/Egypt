@@ -17,18 +17,18 @@ public class QuizDTOMapper implements Function<Quiz, QuizDTO> {
                 quiz.getId(),
                 quiz.getContent(),
                 quiz.getTitle(),
-
                 quiz.getDifficulty(),
                 quiz.getCreationDate(),
                 quiz.getArticle(),
                 quiz.getPicture(),
                 quiz.getRating(),
                 quiz.getArchive(),
-                quiz.getAuthor(),
-//                quiz.getAuthor() == null ? null : quiz.getAuthor().getId(), //en cas d'auteur null pour eviter nullPointerException
+//             quiz.getAuthor().getId(),
+              quiz.getAuthor() == null ? null : quiz.getAuthor().getId(), //en cas d'auteur null pour eviter nullPointerException
                 quiz.getBadge(),
                 quiz.getArticles(),
                 quiz.getComments(),
+                quiz.getRatings(),
                 quiz.getQuestions()
         );
     }

@@ -1,6 +1,7 @@
 package com.example.egypt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -39,24 +40,24 @@ public class Quiz {
     private User author;
 
 
-    @OneToMany(mappedBy = "quiz")
-    private List<Badge> badge;
-    @ManyToMany(mappedBy = "quizzes")
-    private List<Article> articles;
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
+    private List<Badge> badge = new ArrayList<>();
+    @ManyToMany(mappedBy = "quizzes", cascade = CascadeType.REMOVE)
+    private List<Article> articles = new ArrayList<>();
 
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
+    private List<Rating> ratings = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz")
-    private List<Rating> ratings;
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.ALL)
     private List<Question> questions ;
 
     public Quiz() {
     }
-
 
     public Quiz(UUID id, String content, String title, String difficulty, LocalDateTime creationDate, String article, String picture, Float rating, Boolean archive, User author, List<Badge> badge, List<Article> articles, List<Comment> comments, List<Rating> ratings, List<Question> questions) {
         this.id = id;
@@ -73,14 +74,6 @@ public class Quiz {
         this.articles = articles;
         this.comments = comments;
         this.ratings = ratings;
-        this.questions = questions;
-    }
-
-    public List<Question> getQuestions() {
-        return questions;
-    }
-
-    public void setQuestions(List<Question> questions) {
         this.questions = questions;
     }
 
@@ -194,5 +187,13 @@ public class Quiz {
 
     public void setRatings(List<Rating> ratings) {
         this.ratings = ratings;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 }

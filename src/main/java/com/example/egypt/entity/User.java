@@ -1,7 +1,6 @@
 package com.example.egypt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -11,10 +10,7 @@ import jakarta.validation.constraints.Size;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 
 @Entity
@@ -55,8 +51,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author")
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "author")
-    private List<Quiz> quizzes;
+//    @OneToMany(mappedBy = "author")
+//    private List<Quiz> quizzes;
+@OneToMany(mappedBy = "author")
+private List<Quiz> quizzes = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Badge> badges;
@@ -64,7 +62,7 @@ public class User implements UserDetails {
     public User() {
     }
 
-    public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email, String password, List<Comment> comments, List<Quiz> quizzes, List<Badge> badges) {
+    public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email, String password, List<Comment> comments, List<Quiz> quizzes, List<Quiz> quiz, List<Badge> badges) {
         this.id = id;
         this.avatar = avatar;
         this.biography = biography;
@@ -75,6 +73,7 @@ public class User implements UserDetails {
         this.password = password;
         this.comments = comments;
         this.quizzes = quizzes;
+
         this.badges = badges;
     }
     public <E> User(String email, String password, Set<E> user) {
@@ -135,6 +134,8 @@ public class User implements UserDetails {
     public void setEmail(String email) {
         this.email = email;
     }
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

@@ -28,8 +28,9 @@ public class Question {
     @Column(nullable = true, name = "right_answer_2")
     private String right_answer_2;
     @ManyToOne
-    @JoinColumn(name = "quiz_id")
+    @JoinColumn(name ="quiz_id")
     private Quiz quiz;
+
     public Question() {
     }
 
