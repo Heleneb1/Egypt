@@ -16,6 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -186,33 +187,40 @@ public class QuizController {
     }
 
 
-    @PostMapping("/{id}/add-questions")
+    @PutMapping("/{id}/add-questions")
     public ResponseEntity<Quiz> addQuestionsByCategory(
             @PathVariable UUID id,
-            @RequestParam String category) {
+            @RequestBody Map<String, String> body) {
+        String category = body.get("category");
         Quiz quiz = quizRepository.findById(id)
                 .orElseThrow(
                         () -> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "Quiz Not Found: " + id));
 
-        // Récupérez les questions de la base de données en fonction de la catégorie
+        // Récupération des questions de la base de données en fonction de la catégorie
         List<Question> questionsToAdd = questionRepository.findByCategoryContaining(category);
 
-        // Ajoutez les questions récupérées au quiz existant
-        List<Question> currentQuestions = quiz.getQuestions();
+        // Ajout des questions récupérées au quiz existant
+        List<Question> currentQuestions = (List<Question>) quiz.getQuestions();
+
         if (currentQuestions == null) {
             currentQuestions = new ArrayList<>();
         }
-        currentQuestions.addAll(questionsToAdd);
 
-        // Mettez à jour la liste de questions du quiz
+        for (Question question : questionsToAdd) {
+            question.setQuiz(quiz);  // Set the quiz for each question
+            currentQuestions.add(question);
+        }
+
+        // Mise à jour liste de questions du quiz
         quiz.setQuestions(currentQuestions);
 
-        // Sauvegardez le quiz mis à jour dans la base de données
+        // Sauvegarde quiz mis à jour dans la base de données
         Quiz updatedQuiz = quizRepository.save(quiz);
 
         return ResponseEntity.ok(updatedQuiz);
     }
+
 
 
     @PutMapping("/{id}/add-rating")
