@@ -22,7 +22,7 @@ public record QuizDTO(
         Float rating,
         Boolean archive,
         UUID author,
-        @JsonIgnore List<Badge> badge,
+      UUID badge,
         @JsonIgnore List<Article> articles,
         @JsonIgnore List<Comment> comments,
         @JsonIgnore List<Rating> ratings,
@@ -33,11 +33,11 @@ public record QuizDTO(
     }
 
 
-    public List<UUID> getBadgesIds() {
-        return badge.stream()
-                .map(Badge::getId)
-                .collect(Collectors.toList());
-    }
+//    public List<UUID> getBadgesIds() {
+//        return badge.stream()
+//                .map(Badge::getId)
+//                .collect(Collectors.toList());
+//    }
 
     public List<UUID> getCommentsIds() {
         return comments.stream()

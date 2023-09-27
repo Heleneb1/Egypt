@@ -1,8 +1,11 @@
 package com.example.egypt.controller;
 
+import com.example.egypt.DTO.BadgeDTO;
 import com.example.egypt.DTO.UserDTO;
 import com.example.egypt.DTOMapper.UserDTOMapper;
+import com.example.egypt.entity.Badge;
 import com.example.egypt.entity.User;
+import com.example.egypt.repository.BadgeRepository;
 import com.example.egypt.repository.UserRepository;
 
 import com.example.egypt.services.BeanUtils;
@@ -26,18 +29,22 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
+
 @RestController
 
 @RequestMapping("/users")
 public class UserController {
     private final UserRepository userRepository;
     private final UserDTOMapper userDTOMapper;
+    private BadgeRepository badgeRepository;
     private static final String AVATAR_FOLDER = "src/main/resources/static/avatars/";
 
     UserController(UserRepository userRepository,
-                   UserDTOMapper userDTOMapper) {
+                   UserDTOMapper userDTOMapper,
+                   BadgeRepository badgeRepository) {
         this.userRepository = userRepository;
         this.userDTOMapper = userDTOMapper;
+        this.badgeRepository= badgeRepository;
     }
 
 //    @GetMapping("/{id}")
@@ -84,6 +91,38 @@ public class UserController {
 //        return ResponseEntity.ok(updatedPromotionDTO);
 //
 //    }
+    @PutMapping("/{userId}/badges/{badgeId}")
+    public ResponseEntity<UserDTO> awardBadgeToUser(
+            @PathVariable UUID userId,
+            @PathVariable UUID badgeId,
+            @RequestBody Badge badgeDTO) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found: " + userId));
+        Badge badge = badgeRepository.findById(badgeId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Badge not found: " + userId));
+
+
+        // Créez un badge avec les détails requis
+//        Badge badge = new Badge();
+//        badge.setName(badge.getName());
+//        badge.setDescription(badge.getDescription());
+        // Vous pouvez également définir d'autres propriétés du badge ici
+
+        // Ajoutez le badge à la collection de badges de l'utilisateur
+        user.getBadges().add(badge);
+
+        // Enregistrez l'utilisateur mis à jour en base de données
+        User updatedUser = userRepository.save(user);
+
+        // Convertissez l'utilisateur en DTO si nécessaire
+        UserDTO userDTO = userDTOMapper.convertToDTO(updatedUser);
+
+        return ResponseEntity.ok(userDTO);
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
                                               @RequestBody @Validated User userDTO) {
@@ -100,20 +139,25 @@ public class UserController {
 
     //Todo revoir
 
-//    @PutMapping("/{userId}")
-//    public ResponseEntity<String> updateBio(@AuthenticationPrincipal UserDetails userDetails, @RequestBody String newBio, @PathVariable UUID userId) {
-//        if (userDetails == null) {
-//            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Vous devez être connecté pour modifier votre biographie.");
-//        } Optional<User> userOptional = userRepository.findById(userId);
-//        if (userOptional.isPresent()) {
-//            User user = userOptional.get();
-//            user.setBiography(newBio);
-//            userRepository.save(user);
-//            return ResponseEntity.ok("Bio mise à jour avec succès !");
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
+    @PutMapping("/{userId}/update-bio")
+    public ResponseEntity<Map<String, String>> updateBio(@RequestBody String newBio, @PathVariable UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found: " + userId));
+        if (user != null) {
+            user.setBiography(newBio);
+            userRepository.save(user);
+            Map<String, String> response = new HashMap<>();
+            response.put("message", "Bio mise à jour avec succès !");
+            return ResponseEntity.ok(response);
+        } else {
+            Map<String, String> errorResponse = new HashMap<>();
+            errorResponse.put("error", "Vous devez être connecté pour modifier votre biographie.");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
+        }
+    }
+
+
 
     @PutMapping("/{userId}/avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatar) {

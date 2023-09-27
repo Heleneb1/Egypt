@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "quiz")
 public class Quiz {
     @Id
@@ -40,8 +40,9 @@ public class Quiz {
     private User author;
 
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
-    private List<Badge> badge = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "badge_id")
+    private Badge badge;
     @ManyToMany(mappedBy = "quizzes", cascade = CascadeType.REMOVE)
     private List<Article> articles = new ArrayList<>();
 
@@ -59,7 +60,7 @@ public class Quiz {
     public Quiz() {
     }
 
-    public Quiz(UUID id, String content, String title, String difficulty, LocalDateTime creationDate, String article, String picture, Float rating, Boolean archive, User author, List<Badge> badge, List<Article> articles, List<Comment> comments, List<Rating> ratings, List<Question> questions) {
+    public Quiz(UUID id, String content, String title, String difficulty, LocalDateTime creationDate, String article, String picture, Float rating, Boolean archive, User author, Badge badge, List<Article> articles, List<Comment> comments, List<Rating> ratings, List<Question> questions) {
         this.id = id;
         this.content = content;
         this.title = title;
@@ -157,11 +158,11 @@ public class Quiz {
         this.author = author;
     }
 
-    public List<Badge> getBadge() {
+    public Badge getBadge() {
         return badge;
     }
 
-    public void setBadge(List<Badge> badge) {
+    public void setBadge(Badge badge) {
         this.badge = badge;
     }
 

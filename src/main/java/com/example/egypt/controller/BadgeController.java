@@ -4,11 +4,15 @@ package com.example.egypt.controller;
 import com.example.egypt.DTO.BadgeDTO;
 import com.example.egypt.DTOMapper.BadgeDTOMapper;
 
+import com.example.egypt.entity.Article;
 import com.example.egypt.entity.Badge;
+import com.example.egypt.entity.Quiz;
 import com.example.egypt.repository.BadgeRepository;
 
 import com.example.egypt.services.BadgeService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -58,6 +62,7 @@ public class BadgeController {
     public Badge update(@RequestBody Badge badgeUpdated) {
         return this.badgeRepository.save(badgeUpdated);
     }
+
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.MOVED_PERMANENTLY)

@@ -1,9 +1,11 @@
 package com.example.egypt.DTOMapper;
 
 import com.example.egypt.DTO.UserDTO;
+import com.example.egypt.entity.Badge;
 import com.example.egypt.entity.User;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.function.Function;
 
 @Service

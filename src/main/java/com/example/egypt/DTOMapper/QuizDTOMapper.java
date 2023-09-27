@@ -25,11 +25,12 @@ public class QuizDTOMapper implements Function<Quiz, QuizDTO> {
                 quiz.getArchive(),
 //             quiz.getAuthor().getId(),
               quiz.getAuthor() == null ? null : quiz.getAuthor().getId(), //en cas d'auteur null pour eviter nullPointerException
-                quiz.getBadge(),
+                quiz.getBadge() == null ? null: quiz.getBadge().getId(),
                 quiz.getArticles(),
                 quiz.getComments(),
                 quiz.getRatings(),
                 quiz.getQuestions()
+
         );
     }
 

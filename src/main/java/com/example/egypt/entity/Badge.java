@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -19,33 +21,36 @@ public class Badge {
     private String description;
     @Column(nullable = false, name ="image")
     private  String image;
-    @ManyToOne
-    @JoinColumn(name = "quiz_id")
-    private Quiz quiz;
+    @OneToOne(mappedBy = "badge") // Mappé par le champ "badge" de la classe Quiz
+    private Quiz quiz; // Le quiz associé à ce badge
 
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+
+    @ManyToMany(mappedBy = "badges")
+    private Set<User> user = new HashSet<>();
 
 
 
     public Badge() {
     }
 
-    public Badge(UUID id, String name, String description, String image) {
+    public Badge(UUID id, String name, String description, String image, Quiz quiz, Set<User> user) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.image = image;
+        this.quiz = quiz;
+        this.user = user;
     }
-    public User getUser() {
+
+    public Set<User> getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(Set<User> user) {
         this.user = user;
     }
+
     public Quiz getQuiz() {
         return quiz;
     }
@@ -53,6 +58,7 @@ public class Badge {
     public void setQuiz(Quiz quiz) {
         this.quiz = quiz;
     }
+
     public UUID getId() {
         return id;
     }

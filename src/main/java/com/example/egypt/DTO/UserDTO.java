@@ -9,6 +9,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,7 @@ public record UserDTO(UUID id,
 
                       @JsonIgnore List<Comment> comments,
                       @JsonIgnore List<Quiz> quiz,
-                      @JsonIgnore List<Badge> badge) {
+                      @JsonIgnore Set<Badge> badge) {
     public List<UUID> getCommentsIds() {
         return comments.stream()
                 .map(Comment::getId)
@@ -38,10 +39,10 @@ public record UserDTO(UUID id,
                 .collect(Collectors.toList());
     }
 
-    public List<UUID> getBadgesIds() {
+    public Set<UUID> getBadgesIds() {
         return badge.stream()
                 .map(Badge::getId)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 
 
