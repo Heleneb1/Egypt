@@ -18,7 +18,9 @@ public class BadgeDTOMapper implements Function<Badge, BadgeDTO> {
                 badge.getId(),
                 badge.getName(),
                 badge.getDescription(),
-                badge.getImage()
+                badge.getImage(),
+                badge.getUser()
+
         );
     }
     public BadgeDTO convertToDTO(Badge badge) {

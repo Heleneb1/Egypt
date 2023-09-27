@@ -32,27 +32,26 @@ public class QuizController {
     private QuestionRepository questionRepository;
 
     QuizController(QuizRepository quizRepository,
-                   UserRepository userRepository,
-                   BadgeRepository badgeRepository,
-                   CommentRepository commentRepository,
-                   ArticleRepository articleRepository,
-                   QuizService quizService,
-                   QuizDTOMapper quizDTOMapper, QuestionRepository questionRepository) {
+            UserRepository userRepository,
+            BadgeRepository badgeRepository,
+            CommentRepository commentRepository,
+            ArticleRepository articleRepository,
+            QuizService quizService,
+            QuizDTOMapper quizDTOMapper, QuestionRepository questionRepository) {
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
         this.badgeRepository = badgeRepository;
         this.commentRepository = commentRepository;
         this.articleRepository = articleRepository;
         this.quizDTOMapper = quizDTOMapper;
-        this.quizService =quizService;
-        this.questionRepository=questionRepository;
+        this.quizService = quizService;
+        this.questionRepository = questionRepository;
     }
 
     @GetMapping("")
     public List<QuizDTO> getAllQuizzes() {
         QuizService quizService = new QuizService(
-                quizRepository, quizDTOMapper, questionRepository
-        );
+                quizRepository, quizDTOMapper, questionRepository);
         List<QuizDTO> quizDTOS = quizService.findAll();
         return quizDTOS;
     }
@@ -69,13 +68,13 @@ public class QuizController {
         return quizDTOs;
     }
 
-//    @GetMapping("/{userId}")
-//    public QuizDTO getById(@PathVariable UUID userId) {
-//        return this.quizRepository
-//                .findById(userId)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-//        return quizDTOs;
-//    }
+    // @GetMapping("/{userId}")
+    // public QuizDTO getById(@PathVariable UUID userId) {
+    // return this.quizRepository
+    // .findById(userId)
+    // .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+    // return quizDTOs;
+    // }
 
     @PostMapping("/create/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
@@ -95,37 +94,58 @@ public class QuizController {
         newQuiz.setContent(newQuiz.getContent());
         return this.quizRepository.save(newQuiz);
     }
-//    @PostMapping("/create/add-question")
-//    public Quiz createQuizAddQuestion(@RequestParam String category, @RequestBody Quiz newQuiz){
-//        newQuiz = quizService.createQuizAndQuestion(category);
-//        LocalDateTime localDateTimeNow = LocalDateTime.now();
-//        newQuiz.setCreationDate(localDateTimeNow);
-//        newQuiz.setArchive(false);
-//        return this.quizRepository.save(newQuiz);
-//    }
+    // @PostMapping("/create/add-question")
+    // public Quiz createQuizAddQuestion(@RequestParam String category, @RequestBody
+    // Quiz newQuiz){
+    // newQuiz = quizService.createQuizAndQuestion(category);
+    // LocalDateTime localDateTimeNow = LocalDateTime.now();
+    // newQuiz.setCreationDate(localDateTimeNow);
+    // newQuiz.setArchive(false);
+    // return this.quizRepository.save(newQuiz);
+    // }
 
-    @PutMapping("/{id}/badges/{badgeId}/add-badges")
-    public ResponseEntity<Quiz> addBadge(
-            @PathVariable UUID id,
-            @PathVariable UUID badgeId,
-            @RequestBody @Validated Quiz addBadgeQuiz) {
+    // @PutMapping("/{id}/badges/{badgeId}/add-badges")
+    // public ResponseEntity<Quiz> addBadge(
+    // @PathVariable UUID id,
+    // @PathVariable UUID badgeId) {
 
-        Badge badge = badgeRepository.findById(badgeId).orElseThrow(
-                () -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Quiz Not Found: " + badgeId));
+    // Badge badge = badgeRepository.findById(badgeId).orElseThrow(
+    // () -> new ResponseStatusException(
+    // HttpStatus.NOT_FOUND, "Quiz Not Found: " + badgeId));
 
-        Quiz quiz = quizRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Article Not Found: " + id));
+    // Quiz quiz = quizRepository.findById(id).orElseThrow(
+    // () -> new ResponseStatusException(
+    // HttpStatus.NOT_FOUND, "Badge Not Found: " + id));
 
+    // quiz.getBadge().add(badge);
+    // // ajout du badge au quiz
 
-        quiz.getBadge().add(badge);
+    // Quiz updatedQuiz = quizRepository.save(quiz);
 
+    // return ResponseEntity.ok(updatedQuiz);
+    // }
 
-        Quiz updatedQuiz = quizRepository.save(quiz);
+    @PutMapping("/{id}/badges/{badgeId}/add-badge")
+    public ResponseEntity<QuizDTO> addBadgeToQuiz(@PathVariable UUID id,
+                                                  @PathVariable UUID badgeId) {
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Quiz not found: " + id));
 
-        return ResponseEntity.ok(updatedQuiz);
+        Badge badge = badgeRepository.findById(badgeId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Badge not found: " + badgeId));
+
+        quiz.setBadge(badge);
+
+        quizRepository.save(quiz);
+
+        QuizDTOMapper mapper = new QuizDTOMapper();
+        QuizDTO quizDTO = mapper.convertToDTO(quiz);
+
+        return ResponseEntity.ok(quizDTO);
     }
+
 
     @PutMapping("/{id}/comments/{commentId}/add-comments")
     public ResponseEntity<Quiz> addCommentToQuiz(
@@ -139,7 +159,6 @@ public class QuizController {
         Quiz quiz = quizRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Quiz Not Found: " + id));
-
 
         quiz.getComments().add(comment);
 
@@ -161,7 +180,6 @@ public class QuizController {
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Quiz Not Found: " + id));
 
-
         quiz.getArticles().add(article);
 
         Quiz updatedQuiz = quizRepository.save(quiz);
@@ -178,14 +196,12 @@ public class QuizController {
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Quiz Not Found: " + id));
 
-
         quiz.setRating(newRating);
 
         Quiz updatedQuiz = quizRepository.save(quiz);
 
         return ResponseEntity.ok(updatedQuiz);
     }
-
 
     @PutMapping("/{id}/add-questions")
     public ResponseEntity<Quiz> addQuestionsByCategory(
@@ -208,7 +224,7 @@ public class QuizController {
         }
 
         for (Question question : questionsToAdd) {
-            question.setQuiz(quiz);  // Set the quiz for each question
+            question.setQuiz(quiz); // Set the quiz for each question
             currentQuestions.add(question);
         }
 
@@ -220,8 +236,6 @@ public class QuizController {
 
         return ResponseEntity.ok(updatedQuiz);
     }
-
-
 
     @PutMapping("/{id}/add-rating")
     public ResponseEntity<Quiz> addRating(
@@ -255,11 +269,30 @@ public class QuizController {
 
         return ResponseEntity.ok(updatedQuiz);
     }
-//Todo adapter le code au code du dessous
+    @DeleteMapping("/{id}/badges/remove")
+    public ResponseEntity<QuizDTO> removeBadgeFromQuiz(@PathVariable UUID id) {
+        Quiz quiz = quizRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Quiz not found: " + id));
+
+        // Supprimez le badge en le définissant sur null
+        quiz.setBadge(null);
+
+        // Sauvegardez le quiz mis à jour dans le repository
+        quizRepository.save(quiz);
+
+        QuizDTOMapper mapper = new QuizDTOMapper();
+        QuizDTO quizDTO = mapper.convertToDTO(quiz);
+
+        return ResponseEntity.ok(quizDTO);
+    }
+
+
+    // Todo adapter le code au code du dessous
     @PutMapping("/{id}")
-    public ResponseEntity <QuizDTO> updateQuiz(@PathVariable UUID id, @RequestBody  @Validated Quiz quizDTO) {
-        Quiz quizUpdated = quizRepository.findById(id)  .orElseThrow(() -> new ResponseStatusException(
-                HttpStatus.NOT_FOUND, "Quiz not found : " +id));
+    public ResponseEntity<QuizDTO> updateQuiz(@PathVariable UUID id, @RequestBody @Validated Quiz quizDTO) {
+        Quiz quizUpdated = quizRepository.findById(id).orElseThrow(() -> new ResponseStatusException(
+                HttpStatus.NOT_FOUND, "Quiz not found : " + id));
         BeanUtils.copyNonNullProperties(quizDTO, quizUpdated);
         Quiz savedQuiz = quizRepository.save(quizUpdated);
         QuizDTO updatedAnswerDTO = quizDTOMapper.convertToDTO(savedQuiz);

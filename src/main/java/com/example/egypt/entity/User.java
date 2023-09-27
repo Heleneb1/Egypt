@@ -56,13 +56,20 @@ public class User implements UserDetails {
 @OneToMany(mappedBy = "author")
 private List<Quiz> quizzes = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Badge> badges;
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_badge",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "badge_id")
+    )
+    private Set<Badge> badges = new HashSet<>();
+
 
     public User() {
     }
 
-    public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email, String password, List<Comment> comments, List<Quiz> quizzes, List<Quiz> quiz, List<Badge> badges) {
+    public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email, String password, List<Comment> comments, List<Quiz> quizzes, Set<Badge> badges) {
         this.id = id;
         this.avatar = avatar;
         this.biography = biography;
@@ -73,9 +80,9 @@ private List<Quiz> quizzes = new ArrayList<>();
         this.password = password;
         this.comments = comments;
         this.quizzes = quizzes;
-
         this.badges = badges;
     }
+
     public <E> User(String email, String password, Set<E> user) {
     }
 
@@ -191,11 +198,11 @@ private List<Quiz> quizzes = new ArrayList<>();
         this.quizzes = quizzes;
     }
 
-    public List<Badge> getBadges() {
+    public Set<Badge> getBadges() {
         return badges;
     }
 
-    public void setBadges(List<Badge> badges) {
+    public void setBadges(Set<Badge> badges) {
         this.badges = badges;
     }
 }
