@@ -21,6 +21,7 @@ public class ArticleDTOMapper implements Function<Article, ArticleDTO> {
                 article.getEditionDate(),
                 article.getTag(),
                 article.getAuthor(),
+                article.getImage(),
                 article.getQuizzes(),
                 article.getArchive(),
                 article.getComments(),
