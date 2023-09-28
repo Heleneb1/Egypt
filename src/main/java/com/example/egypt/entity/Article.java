@@ -38,13 +38,15 @@ public class Article {
     public void setEditionDate(LocalDateTime editionDate) {
         this.editionDate = editionDate;
     }
+
     @Column(nullable = true, name = "rating")
     private Float rating;
     @Column(nullable = false, name = "tag")
     private String tag;
     @Column(nullable = false, name = "author")
     private String author;
-
+    @Column(nullable = true, name = "image")
+    private String image;
     @ManyToMany
     @JoinTable(
             name = "article_quiz",
@@ -59,7 +61,6 @@ public class Article {
     private List<Comment> comments = new ArrayList<>();
 
 
-
     @OneToMany(mappedBy = "article")
     private List<Rating> ratings;
 
@@ -68,7 +69,7 @@ public class Article {
     }
 
 
-    public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate, Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings,String author) {
+    public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate, Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings, String author) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -170,5 +171,13 @@ public class Article {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }
