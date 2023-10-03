@@ -44,7 +44,7 @@ public class EmailServiceImpl implements EmailSenderService {
             String to, String subject, String text) {
 
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("heleneb.dev@gmail.com");
+        message.setFrom("");
         message.setTo(to);
         message.setSubject(subject);
         message.setText(text);
