@@ -1,6 +1,5 @@
 package com.example.egypt.controller;
 
-import com.example.egypt.DTO.BadgeDTO;
 import com.example.egypt.DTO.UserDTO;
 import com.example.egypt.DTOMapper.UserDTOMapper;
 import com.example.egypt.entity.Badge;
@@ -29,7 +28,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
-
 @RestController
 
 @RequestMapping("/users")
@@ -40,22 +38,12 @@ public class UserController {
     private static final String AVATAR_FOLDER = "src/main/resources/static/avatars/";
 
     UserController(UserRepository userRepository,
-                   UserDTOMapper userDTOMapper,
-                   BadgeRepository badgeRepository) {
+            UserDTOMapper userDTOMapper,
+            BadgeRepository badgeRepository) {
         this.userRepository = userRepository;
         this.userDTOMapper = userDTOMapper;
-        this.badgeRepository= badgeRepository;
+        this.badgeRepository = badgeRepository;
     }
-
-//    @GetMapping("/{id}")
-//    public UserDTO getUserById(@PathVariable UUID id) {
-//        Optional<UserDTO> optionalUserDTO = UserService.findUserById(id);
-//        if (optionalUserDTO.isPresent()) {
-//            return optionalUserDTO.get();
-//        } else {
-//            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found " + id);
-//        }
-//    }
 
     @GetMapping("/{id}")
     public User getById(@PathVariable UUID id) {
@@ -77,20 +65,20 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    //    @PutMapping("/{id}")
-//    public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
-//                                              @RequestBody @Validated User userDTO) {
-//        User updatedUser = userRepository.findById(id)
-//                .orElseThrow(() -> new ResponseStatusException(
-//                        HttpStatus.NOT_FOUND, "Promotion not found: " + id));
-//
-//        BeanUtils.copyNonNullProperties(userDTO, updatedUser);
-//        User savedUser = userRepository.save(updatedUser);
-//
-//        UserDTO updatedPromotionDTO = userDTOMapper.convertToDTO(savedUser);
-//        return ResponseEntity.ok(updatedPromotionDTO);
-//
-//    }
+    // @PutMapping("/{id}")
+    // public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
+    // @RequestBody @Validated User userDTO) {
+    // User updatedUser = userRepository.findById(id)
+    // .orElseThrow(() -> new ResponseStatusException(
+    // HttpStatus.NOT_FOUND, "Promotion not found: " + id));
+    //
+    // BeanUtils.copyNonNullProperties(userDTO, updatedUser);
+    // User savedUser = userRepository.save(updatedUser);
+    //
+    // UserDTO updatedPromotionDTO = userDTOMapper.convertToDTO(savedUser);
+    // return ResponseEntity.ok(updatedPromotionDTO);
+    //
+    // }
     @PutMapping("/{userId}/badges/{badgeId}")
     public ResponseEntity<UserDTO> awardBadgeToUser(
             @PathVariable UUID userId,
@@ -104,20 +92,10 @@ public class UserController {
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Badge not found: " + userId));
 
-
-        // Créez un badge avec les détails requis
-//        Badge badge = new Badge();
-//        badge.setName(badge.getName());
-//        badge.setDescription(badge.getDescription());
-        // Vous pouvez également définir d'autres propriétés du badge ici
-
-        // Ajoutez le badge à la collection de badges de l'utilisateur
         user.getBadges().add(badge);
 
-        // Enregistrez l'utilisateur mis à jour en base de données
         User updatedUser = userRepository.save(user);
 
-        // Convertissez l'utilisateur en DTO si nécessaire
         UserDTO userDTO = userDTOMapper.convertToDTO(updatedUser);
 
         return ResponseEntity.ok(userDTO);
@@ -125,7 +103,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
-                                              @RequestBody @Validated User userDTO) {
+            @RequestBody @Validated User userDTO) {
         User updatedUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "User not found: " + id));
@@ -136,8 +114,6 @@ public class UserController {
         UserDTO updatedUserDTO = userDTOMapper.convertToDTO(savedUser);
         return ResponseEntity.ok(updatedUserDTO);
     }
-
-    //Todo revoir
 
     @PutMapping("/{userId}/update-bio")
     public ResponseEntity<Map<String, String>> updateBio(@RequestBody String newBio, @PathVariable UUID userId) {
@@ -157,10 +133,9 @@ public class UserController {
         }
     }
 
-
-
     @PutMapping("/{userId}/avatar")
-    public ResponseEntity<Map<String, String>> uploadAvatar(@PathVariable UUID userId, @RequestParam("avatar") MultipartFile avatar) {
+    public ResponseEntity<Map<String, String>> uploadAvatar(@PathVariable UUID userId,
+            @RequestParam("avatar") MultipartFile avatar) {
         try {
             if (!Objects.requireNonNull(avatar.getContentType()).startsWith("image/")) {
                 throw new IllegalArgumentException("File must be an image");

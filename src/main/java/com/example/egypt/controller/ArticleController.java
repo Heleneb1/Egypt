@@ -13,7 +13,6 @@ import com.example.egypt.services.ArticleService;
 import com.example.egypt.services.BeanUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,12 +21,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-
-
 @RestController
 @RequestMapping("/articles")
 public class ArticleController {
-
 
     private ArticleRepository articleRepository;
     private QuizRepository quizRepository;
@@ -35,9 +31,9 @@ public class ArticleController {
     private final ArticleDTOMapper articleDTOMapper;
 
     ArticleController(ArticleRepository articleRepository,
-                      QuizRepository quizRepository,
-                      UserRepository userRepository,
-                      ArticleDTOMapper articleDTOMapper) {
+            QuizRepository quizRepository,
+            UserRepository userRepository,
+            ArticleDTOMapper articleDTOMapper) {
         this.articleRepository = articleRepository;
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
@@ -60,12 +56,6 @@ public class ArticleController {
         return articleDTOMapper.convertToDTO(article);
     }
 
-
-    //    @GetMapping("/byAuthor/{author}")
-//    public List<Article> getArticlesByAuthor(@PathVariable String author) {
-//        return this.articleRepository.findArticlesByAuthorContaining(author);
-//
-//    }
     @GetMapping("/byAuthor/{author}")
     public List<ArticleDTO> getArticlesByAuthor(@PathVariable String author) {
         ArticleService articleService = new ArticleService(
@@ -73,15 +63,17 @@ public class ArticleController {
         List<ArticleDTO> articles = articleService.findByAuthor(author);
         return articles;
     }
+
     @GetMapping("/search")
-    public List<ArticleDTO>searchArticle (@RequestParam(required = false) String title,
-    @RequestParam(required = false) String author,
-    @RequestParam(required = false) String tag) {
-ArticleService articleService = new ArticleService(articleRepository, articleDTOMapper, quizRepository);
-        List<ArticleDTO> articles =  articleService.searchArticleByTitleOrAuthorOrTag(title, author, tag);
+    public List<ArticleDTO> searchArticle(@RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) String tag) {
+        ArticleService articleService = new ArticleService(articleRepository, articleDTOMapper, quizRepository);
+        List<ArticleDTO> articles = articleService.searchArticleByTitleOrAuthorOrTag(title, author, tag);
 
         return articles;
     }
+
     @GetMapping("/byTag/{tag}")
     public List<ArticleDTO> getByTag(@PathVariable String tag) {
         ArticleService articleService = new ArticleService(
@@ -89,6 +81,7 @@ ArticleService articleService = new ArticleService(articleRepository, articleDTO
         List<ArticleDTO> articles = articleService.findByTag(tag);
         return articles;
     }
+
     @GetMapping("/byTitle/{title}")
     public List<ArticleDTO> getByTitle(@PathVariable String title) {
         ArticleService articleService = new ArticleService(
@@ -105,7 +98,6 @@ ArticleService articleService = new ArticleService(articleRepository, articleDTO
         return articles;
     }
 
-
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public Article create(@PathVariable UUID userId, @RequestBody Article newArticle) {
@@ -119,13 +111,7 @@ ArticleService articleService = new ArticleService(articleRepository, articleDTO
         newArticle.setEditionDate(localDateTimeNow);
         return this.articleRepository.save(newArticle);
     }
-//@PostMapping("/create")
-//@PreAuthorize("hasRole('ADMIN')")
-//public Article create(@RequestBody Article newArticle) {
-//    LocalDateTime localDateTimeNow = LocalDateTime.now();
-//    newArticle.setEditionDate(localDateTimeNow);
-//    return this.articleRepository.save(newArticle);
-//}
+
     @PutMapping("/{id}")
     public Article update(@RequestBody Article articleUpdated) {
         return this.articleRepository.save(articleUpdated);
@@ -145,9 +131,7 @@ ArticleService articleService = new ArticleService(articleRepository, articleDTO
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Article Not Found: " + id));
 
-
         article.getQuizzes().add(quiz);
-
 
         Article updatedArticle = articleRepository.save(article);
 
@@ -163,9 +147,7 @@ ArticleService articleService = new ArticleService(articleRepository, articleDTO
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Article Not Found: " + id));
 
-
         newComment.setArticle(article);
-
 
         article.getComments().add(newComment);
 
@@ -173,16 +155,17 @@ ArticleService articleService = new ArticleService(articleRepository, articleDTO
 
         return ResponseEntity.ok(updatedArticle);
     }
+
     @PutMapping("/{id}/add-rating")
     public ResponseEntity<ArticleDTO> addRating(
             @PathVariable UUID id,
-            @RequestBody  List<Float> newRatings,
+            @RequestBody List<Float> newRatings,
             @Validated ArticleDTO addRating) {
 
-      Article article = articleRepository.findById(id)
-              .orElseThrow(
-                () -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Article Not Found: " + id));
+        Article article = articleRepository.findById(id)
+                .orElseThrow(
+                        () -> new ResponseStatusException(
+                                HttpStatus.NOT_FOUND, "Article Not Found: " + id));
 
         Float currentRating = article.getRating();
         if (currentRating == null) {
@@ -201,8 +184,8 @@ ArticleService articleService = new ArticleService(articleRepository, articleDTO
         article.setRating(roundedAverage);
         BeanUtils.copyNonNullProperties(addRating, article);
 
-       Article updatedArticle = articleRepository.save(article);
-       ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(updatedArticle);
+        Article updatedArticle = articleRepository.save(article);
+        ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(updatedArticle);
 
         return ResponseEntity.ok(updatedArticleDTO);
     }
@@ -213,4 +196,3 @@ ArticleService articleService = new ArticleService(articleRepository, articleDTO
     }
 
 }
-

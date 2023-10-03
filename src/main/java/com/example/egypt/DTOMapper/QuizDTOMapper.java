@@ -1,8 +1,7 @@
 package com.example.egypt.DTOMapper;
 
-import com.example.egypt.DTO.ArticleDTO;
 import com.example.egypt.DTO.QuizDTO;
-import com.example.egypt.entity.Article;
+
 import com.example.egypt.entity.Quiz;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +22,9 @@ public class QuizDTOMapper implements Function<Quiz, QuizDTO> {
                 quiz.getPicture(),
                 quiz.getRating(),
                 quiz.getArchive(),
-//             quiz.getAuthor().getId(),
-              quiz.getAuthor() == null ? null : quiz.getAuthor().getId(), //en cas d'auteur null pour eviter nullPointerException
-                quiz.getBadge() == null ? null: quiz.getBadge().getId(),
+                quiz.getAuthor() == null ? null : quiz.getAuthor().getId(), // en cas d'auteur null pour eviter
+                                                                            // nullPointerException
+                quiz.getBadge() == null ? null : quiz.getBadge().getId(),
                 quiz.getArticles(),
                 quiz.getComments(),
                 quiz.getRatings(),
@@ -33,7 +32,6 @@ public class QuizDTOMapper implements Function<Quiz, QuizDTO> {
 
         );
     }
-
 
     public QuizDTO convertToDTO(Quiz quiz) {
         return apply(quiz);

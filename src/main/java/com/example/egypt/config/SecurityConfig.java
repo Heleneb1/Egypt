@@ -1,6 +1,5 @@
 package com.example.egypt.config;
 
-
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
@@ -46,18 +45,18 @@ public class SecurityConfig {
 
                     auth.requestMatchers(new AntPathRequestMatcher("/api/auth/*")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/articles/**")).permitAll();
-                   // auth.requestMatchers(new AntPathRequestMatcher("/comments/**")).authenticated();
+                    // auth.requestMatchers(new
+                    // AntPathRequestMatcher("/comments/**")).authenticated();
                     auth.requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated();
                     auth.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/contact")).permitAll();
-                   // auth.requestMatchers("/contact").permitAll();
+                    // auth.requestMatchers("/contact").permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
 
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
-
 
     }
 

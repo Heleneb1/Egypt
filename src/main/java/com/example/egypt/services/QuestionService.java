@@ -1,6 +1,5 @@
 package com.example.egypt.services;
 
-
 import com.example.egypt.DTO.QuestionDTO;
 import com.example.egypt.DTOMapper.QuestionDTOMapper;
 import com.example.egypt.entity.Question;
@@ -15,17 +14,15 @@ import java.util.stream.Collectors;
 @Service
 public class QuestionService {
 
-
     private static QuestionRepository questionRepository;
     private static QuestionDTOMapper questionDTOMapper;
 
-
     public QuestionService(QuestionRepository questionRepository,
-                           QuestionDTOMapper questionDTOMapper,
-                           QuestionRepository repository) {
+            QuestionDTOMapper questionDTOMapper,
+            QuestionRepository repository) {
 
         this.questionRepository = questionRepository;
-        this.questionDTOMapper= questionDTOMapper;
+        this.questionDTOMapper = questionDTOMapper;
     }
 
     public List<QuestionDTO> findAll() {
@@ -41,19 +38,10 @@ public class QuestionService {
     }
 
     public List<QuestionDTO> searchQuestionByCategory(String category) {
-        List<Question> questions =questionRepository.findByCategoryContaining(category);
+        List<Question> questions = questionRepository.findByCategoryContaining(category);
         return questions.stream()
                 .map(questionDTOMapper::convertToDTO)
                 .collect(Collectors.toList());
     }
-//    public List<QuestionDTO> findByAuthorId(UUID authorId) {
-//        List<Question> questions = questionRepository.findByAuthorId(authorId);
-//        return questions.stream()
-//                .map(questionDTOMapper::convertToDTO)
-//                .collect(Collectors.toList());
-//    }
-
 
 }
-
-
