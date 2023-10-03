@@ -18,9 +18,9 @@ public record ArticleDTO(
         String tag,
         String author,
         String image,
-         List<Quiz> quizzes,
+        @JsonIgnore List<Quiz> quizzes,
         Boolean archive,
-        List<Comment> comments,
+       @JsonIgnore List<Comment> comments,
         Float ratings
 ) {
     public LocalDateTime setEditionDate(LocalDateTime localDateTimeNow) {
