@@ -1,8 +1,5 @@
 package com.example.egypt.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -11,7 +8,8 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+// property = "id")
 @Table(name = "quiz")
 public class Quiz {
     @Id
@@ -39,13 +37,11 @@ public class Quiz {
     @JoinColumn(name = "author_id")
     private User author;
 
-
     @OneToOne
     @JoinColumn(name = "badge_id")
     private Badge badge;
     @ManyToMany(mappedBy = "quizzes", cascade = CascadeType.REMOVE)
     private List<Article> articles = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)
     private List<Comment> comments = new ArrayList<>();
@@ -55,12 +51,14 @@ public class Quiz {
 
     @OneToMany(mappedBy = "quiz")
 
-    private List<Question> questions ;
+    private List<Question> questions;
 
     public Quiz() {
     }
 
-    public Quiz(UUID id, String content, String title, String difficulty, LocalDateTime creationDate, String article, String picture, Float rating, Boolean archive, User author, Badge badge, List<Article> articles, List<Comment> comments, List<Rating> ratings, List<Question> questions) {
+    public Quiz(UUID id, String content, String title, String difficulty, LocalDateTime creationDate, String article,
+            String picture, Float rating, Boolean archive, User author, Badge badge, List<Article> articles,
+            List<Comment> comments, List<Rating> ratings, List<Question> questions) {
         this.id = id;
         this.content = content;
         this.title = title;

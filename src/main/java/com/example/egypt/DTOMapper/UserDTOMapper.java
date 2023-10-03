@@ -1,11 +1,10 @@
 package com.example.egypt.DTOMapper;
 
 import com.example.egypt.DTO.UserDTO;
-import com.example.egypt.entity.Badge;
+
 import com.example.egypt.entity.User;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.function.Function;
 
 @Service
@@ -22,12 +21,11 @@ public class UserDTOMapper implements Function<User, UserDTO> {
                 user.getEmail(),
                 user.getComments(),
                 user.getQuizzes(),
-                user.getBadges()
-        );
+                user.getBadges());
     }
 
-    public  UserDTO convertToDTO(User user) {
-        return apply (user);
+    public UserDTO convertToDTO(User user) {
+        return apply(user);
     }
 
 }

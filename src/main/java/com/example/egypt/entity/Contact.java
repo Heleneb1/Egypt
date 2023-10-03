@@ -27,7 +27,7 @@ public class Contact {
         return username;
     }
 
-    public void setUsername(String username) { // Setter for 'username'
+    public void setUsername(String username) {
         this.username = username;
     }
 

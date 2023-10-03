@@ -1,16 +1,14 @@
 package com.example.egypt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -48,11 +46,7 @@ public class Article {
     @Column(nullable = true, name = "image")
     private String image;
     @ManyToMany
-    @JoinTable(
-            name = "article_quiz",
-            joinColumns = @JoinColumn(name = "article_id"),
-            inverseJoinColumns = @JoinColumn(name = "quiz_id")
-    )
+    @JoinTable(name = "article_quiz", joinColumns = @JoinColumn(name = "article_id"), inverseJoinColumns = @JoinColumn(name = "quiz_id"))
     private List<Quiz> quizzes;
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
     private Boolean archive = false;
@@ -63,12 +57,12 @@ public class Article {
     @OneToMany(mappedBy = "article")
     private List<Rating> ratings;
 
-
     public Article() {
     }
 
-
-    public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate, Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings, String author) {
+    public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate,
+            Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings,
+            String author) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -130,7 +124,6 @@ public class Article {
     public void setTag(String tag) {
         this.tag = tag;
     }
-
 
     public List<Quiz> getQuizzes() {
         return quizzes;

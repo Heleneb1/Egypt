@@ -6,27 +6,22 @@ import com.example.egypt.entity.Comment;
 import com.example.egypt.entity.Quiz;
 import com.example.egypt.entity.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
-
 public record UserDTO(UUID id,
-                      String avatar,
-                      String biography,
-                      String lastname,
-                      String firstname,
-                      Role role,
-                      String email,
-//                      String password,
-
-                      @JsonIgnore List<Comment> comments,
-                      @JsonIgnore List<Quiz> quiz,
-                      @JsonIgnore Set<Badge> badge) {
+        String avatar,
+        String biography,
+        String lastname,
+        String firstname,
+        Role role,
+        String email,
+        @JsonIgnore List<Comment> comments,
+        @JsonIgnore List<Quiz> quiz,
+        @JsonIgnore Set<Badge> badge) {
     public List<UUID> getCommentsIds() {
         return comments.stream()
                 .map(Comment::getId)
@@ -44,6 +39,5 @@ public record UserDTO(UUID id,
                 .map(Badge::getId)
                 .collect(Collectors.toSet());
     }
-
 
 }

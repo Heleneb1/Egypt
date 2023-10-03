@@ -2,13 +2,10 @@ package com.example.egypt.DTOMapper;
 
 import com.example.egypt.DTO.CommentDTO;
 import com.example.egypt.entity.Comment;
-import com.example.egypt.entity.Quiz;
+
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 import java.util.function.Function;
-
 
 @Service
 public class CommentDTOMapper implements Function<Comment, CommentDTO> {
@@ -22,8 +19,7 @@ public class CommentDTOMapper implements Function<Comment, CommentDTO> {
                 comment.getArchive(),
                 comment.getAuthor().getId(),
                 comment.getQuiz(),
-                comment.getArticle()
-        );
+                comment.getArticle());
     }
 
     public CommentDTO convertToDTO(Comment comment) {
