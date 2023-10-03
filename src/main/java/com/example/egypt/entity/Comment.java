@@ -36,7 +36,6 @@ public class Comment {
     private Article article;
 
 
-
     public Comment() {
     }
 

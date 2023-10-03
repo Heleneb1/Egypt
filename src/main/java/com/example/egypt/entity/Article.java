@@ -56,10 +56,9 @@ public class Article {
     private List<Quiz> quizzes;
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
     private Boolean archive = false;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "article")
+    @Column(name = "comment")
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
-
 
     @OneToMany(mappedBy = "article")
     private List<Rating> ratings;
