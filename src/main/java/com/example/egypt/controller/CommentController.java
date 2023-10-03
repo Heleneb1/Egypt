@@ -20,6 +20,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/comments")
@@ -58,6 +59,23 @@ public class CommentController {
                         .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return commentDTOMapper.convertToDTO(comment);
     }
+    @GetMapping("/byArticle/{articleId}")
+    public List<CommentDTO> getByArticle(@PathVariable UUID articleId) {
+        Article article = this.articleRepository.findById(articleId)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+
+        List<Comment> comments = this.commentRepository.findByArticle(article);
+
+        List<CommentDTO> commentDTOs = comments.stream()
+                .map(commentDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
+
+        return commentDTOs;
+    }
+
+
+
+
 
     @PostMapping("/{authorId}/create")
     @ResponseStatus(HttpStatus.CREATED)
@@ -116,34 +134,72 @@ public class CommentController {
         return this.commentRepository.save(commentUpdated);
     }
 
-    @PutMapping("/articles/{articleId}/add-comment")
+    @PutMapping("{authorId}/articles/{articleId}/add-comment")
     public ResponseEntity<Article> addCommentToArticle(
-
             @PathVariable UUID articleId,
             @RequestBody Comment newComment,
-            @RequestParam UUID authorId) {
+            @PathVariable UUID authorId) {
 
         Article article = articleRepository.findById(articleId).orElseThrow(
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
 
-
-        newComment.setId(null);
-
-        newComment.setArticle(article);
-
         User author = userRepository.findById(authorId).orElseThrow(
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Author Not Found: " + authorId));
 
+        newComment.setId(null);
+        newComment.setArticle(article);
         newComment.setAuthor(author);
+        newComment.setArchive(false);
+        newComment.setCreationDate(LocalDateTime.now());
+        newComment.setContent(newComment.getContent());
 
         article.getComments().add(newComment);
+
 
         Article updatedArticle = articleRepository.save(article);
 
         return ResponseEntity.ok(updatedArticle);
     }
+//    @PutMapping("{authorId}/articles/{articleId}/add-comment")
+//    public ResponseEntity<Article> addCommentToArticle(
+//            @PathVariable UUID articleId,
+//            @RequestBody Comment newComment,
+//            @PathVariable UUID authorId) {
+//
+//        if (newComment.getContent() == null || newComment.getContent().isEmpty()) new ResponseStatusException(
+//                HttpStatus.NOT_FOUND, "Le contenu du commentaire ne peut pas être vide" ) ;
+//        // Le contenu du commentaire est null ou vide, renvoyez une réponse d'erreur
+////
+////            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Le contenu du commentaire ne peut pas être vide.");
+//
+//
+//
+//
+//
+//
+//        Article article = articleRepository.findById(articleId).orElseThrow(
+//                () -> new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
+//
+//        User author = userRepository.findById(authorId).orElseThrow(
+//                () -> new ResponseStatusException(
+//                        HttpStatus.NOT_FOUND, "Author Not Found: " + authorId));
+//
+//        newComment.setId(null);
+//        newComment.setArticle(article);
+//        newComment.setAuthor(author);
+//        newComment.setArchive(false);
+//        newComment.setCreationDate(LocalDateTime.now());
+//
+//        article.getComments().add(newComment);
+//
+//        Article updatedArticle = articleRepository.save(article);
+//
+//        return ResponseEntity.ok(updatedArticle);
+//    }
+
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.MOVED_PERMANENTLY)
