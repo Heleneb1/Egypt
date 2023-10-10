@@ -12,7 +12,6 @@ public class ArticleDTOMapper implements Function<Article, ArticleDTO> {
     @Override
     public ArticleDTO apply(Article article) {
 
-
         return new ArticleDTO(
                 article.getId(),
                 article.getTitle(),
@@ -25,10 +24,8 @@ public class ArticleDTOMapper implements Function<Article, ArticleDTO> {
                 article.getQuizzes(),
                 article.getArchive(),
                 article.getComments(),
-                article.getRating()
-        );
+                article.getRating());
     }
-
 
     public ArticleDTO convertToDTO(Article article) {
         return apply(article);

@@ -1,12 +1,15 @@
 package com.example.egypt.controller;
 
+import com.example.egypt.DTO.AddCommentsDTO;
 import com.example.egypt.DTO.ArticleDTO;
+import com.example.egypt.DTO.CommentDTO;
 import com.example.egypt.DTOMapper.ArticleDTOMapper;
 import com.example.egypt.entity.Article;
 import com.example.egypt.entity.Comment;
 import com.example.egypt.entity.Quiz;
 import com.example.egypt.entity.User;
 import com.example.egypt.repository.ArticleRepository;
+import com.example.egypt.repository.CommentRepository;
 import com.example.egypt.repository.QuizRepository;
 import com.example.egypt.repository.UserRepository;
 import com.example.egypt.services.ArticleService;
@@ -18,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -28,15 +32,18 @@ public class ArticleController {
     private ArticleRepository articleRepository;
     private QuizRepository quizRepository;
     private UserRepository userRepository;
+    private CommentRepository commentRepository;
     private final ArticleDTOMapper articleDTOMapper;
 
     ArticleController(ArticleRepository articleRepository,
             QuizRepository quizRepository,
             UserRepository userRepository,
-            ArticleDTOMapper articleDTOMapper) {
+            ArticleDTOMapper articleDTOMapper,
+            CommentRepository commentRepository) {
         this.articleRepository = articleRepository;
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
         this.articleDTOMapper = articleDTOMapper;
     }
 
@@ -98,23 +105,79 @@ public class ArticleController {
         return articles;
     }
 
-    @PostMapping("/create")
-    @ResponseStatus(HttpStatus.CREATED)
-    public Article create(@PathVariable UUID userId, @RequestBody Article newArticle) {
-        User user = userRepository
-                .findById(userId)
-                .orElseThrow(
-                        () -> new ResponseStatusException(
-                                HttpStatus.NOT_FOUND, "Not Found" + userId));
+    // @PostMapping("/create")
+    // @ResponseStatus(HttpStatus.CREATED)
+    // public Article create(@RequestBody Article newArticle) {
 
+    // LocalDateTime localDateTimeNow = LocalDateTime.now();
+    // newArticle.setEditionDate(localDateTimeNow);
+    // return this.articleRepository.save(newArticle);
+    // }
+    @PostMapping("/create")
+    public ResponseEntity<Article> create(@RequestBody @Validated Article newArticle) {
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         newArticle.setEditionDate(localDateTimeNow);
-        return this.articleRepository.save(newArticle);
+        Article createArticle = articleRepository.save(newArticle);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createArticle);
     }
 
+    // @PostMapping
+    // public ResponseEntity<User> createUser(@RequestBody @Validated User user) {
+    // User createdUser = userRepository.save(user);
+    // return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
+    // }
+    // @PutMapping("/{id}")
+    // public Article update(@RequestBody Article articleUpdated) {
+    // return this.articleRepository.save(articleUpdated);
+    // }
     @PutMapping("/{id}")
-    public Article update(@RequestBody Article articleUpdated) {
-        return this.articleRepository.save(articleUpdated);
+    public ResponseEntity<ArticleDTO> updateArticle(
+            @PathVariable UUID id, @RequestBody ArticleDTO articleDTO) {
+        Article updatedArticle = articleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Article not found: " + id));
+        BeanUtils.copyNonNullProperties(articleDTO, updatedArticle);
+        Article savedArticle = articleRepository.save(updatedArticle);
+        ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(savedArticle);
+        return ResponseEntity.ok(updatedArticleDTO);
+    }
+
+    @PutMapping("/{id}/{userId}/add-comment")
+    public ResponseEntity<ArticleDTO> addCommentToArticle(
+            @PathVariable UUID id,
+            @PathVariable UUID userId,
+            @RequestBody AddCommentsDTO addCommentsDTO) {
+        // Récupérez la liste des commentaires du DTO
+        List<String> newComments = addCommentsDTO.comments();
+
+        // Recherchez l'article en fonction de l'ID
+        Article updatedArticle = articleRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Article not found: " + id));
+
+        // Recherchez l'utilisateur en fonction de l'ID
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User not found: " + userId));
+
+        // Créez un nouveau commentaire pour chaque commentaire de la liste et
+        // configurez-le
+        for (String commentText : newComments) {
+            Comment newComment = new Comment();
+            newComment.setContent(commentText);
+            newComment.setArticle(updatedArticle);
+            newComment.setAuthor(user);
+            // Ajoutez le commentaire à la liste des commentaires de l'article
+            updatedArticle.getComments().add(newComment);
+        }
+
+        // Enregistrez l'article mis à jour dans la base de données
+        Article savedArticle = articleRepository.save(updatedArticle);
+
+        // Convertissez l'article mis à jour en DTO
+        ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(savedArticle);
+
+        return ResponseEntity.ok(updatedArticleDTO);
     }
 
     @PutMapping("/{id}/quizzes/{quizId}/add-quizzes")
@@ -138,23 +201,55 @@ public class ArticleController {
         return ResponseEntity.ok(updatedArticle);
     }
 
-    @PostMapping("/{id}/add-comments")
-    public ResponseEntity<Article> addCommentToArticle(
-            @PathVariable UUID id,
-            @RequestBody Comment newComment) {
+    // @PostMapping("/{id}/add-comments")
+    // public ResponseEntity<ArticleDTO> addCommentToArticle(
+    // @PathVariable UUID id,
+    // @RequestBody Comment newComment, @RequestBody @Validated ArticleDTO
+    // articleDTO) {
 
-        Article article = articleRepository.findById(id).orElseThrow(
-                () -> new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "Article Not Found: " + id));
+    // Article article = articleRepository.findById(id).orElseThrow(
+    // () -> new ResponseStatusException(
+    // HttpStatus.NOT_FOUND, "Article Not Found: " + id));
 
-        newComment.setArticle(article);
+    // newComment.setArticle(article);
 
-        article.getComments().add(newComment);
+    // article.getComments().add(newComment);
 
-        Article updatedArticle = articleRepository.save(article);
+    // BeanUtils.copyNonNullProperties(articleDTO, article);
+    // Article savedArticle = articleRepository.save(article);
+    // ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(savedArticle);
 
-        return ResponseEntity.ok(updatedArticle);
-    }
+    // return ResponseEntity.ok(updatedArticleDTO);
+    // }
+    // @PutMapping("/{articleId}/author/{authorId}/add-comment")
+    // public ResponseEntity<ArticleDTO> addComment(
+    // @PathVariable UUID articleId,
+    // @PathVariable UUID authorId,
+    // @RequestBody CommentDTO newCommentDTO) {
+
+    // Article article = articleRepository.findById(articleId)
+    // .orElseThrow(() -> new ResponseStatusException(
+    // HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
+
+    // User author = userRepository.findById(authorId)
+    // .orElseThrow(() -> new ResponseStatusException(
+    // HttpStatus.NOT_FOUND, "Author Not Found: " + authorId));
+
+    // // Créez un nouvel objet Comment à partir de CommentDTO
+    // Comment newComment = new Comment();
+    // BeanUtils.copyNonNullProperties(newComment, article);
+
+    // // Ajoutez le commentaire à la liste des commentaires de l'article
+    // article.getComments().add(newComment);
+
+    // // Enregistrez l'article mis à jour dans la base de données
+    // article = articleRepository.save(article);
+
+    // // Convertissez l'article mis à jour en DTO pour la réponse
+    // ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(article);
+
+    // return ResponseEntity.ok(updatedArticleDTO);
+    // }
 
     @PutMapping("/{id}/add-rating")
     public ResponseEntity<ArticleDTO> addRating(

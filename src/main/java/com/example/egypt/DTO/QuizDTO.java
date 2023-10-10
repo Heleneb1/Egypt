@@ -28,11 +28,11 @@ public record QuizDTO(
                 return localDateTimeNow;
         }
 
-        // public List<UUID> getBadgesIds() {
-        // return badge.stream()
-        // .map(Badge::getId)
-        // .collect(Collectors.toList());
-        // }
+        public List<UUID> getArticlesIds() {
+                return articles.stream()
+                                .map(Article::getId)
+                                .collect(Collectors.toList());
+        }
 
         public List<UUID> getCommentsIds() {
                 return comments.stream()
@@ -40,11 +40,12 @@ public record QuizDTO(
                                 .collect(Collectors.toList());
         }
 
-        // public List<UUID> getRatingsIds() {
-        // return rating.stream()
-        // .map(Rating::getId)
-        // .collect(Collectors.toList());
-        // }
+        public List<UUID> getRatingsIds() {
+                return ratings.stream()
+                                .map(Rating::getId)
+                                .collect(Collectors.toList());
+        }
+
         public List<UUID> getQuestionsIds() {
                 return questions.stream()
                                 .map(Question::getId)

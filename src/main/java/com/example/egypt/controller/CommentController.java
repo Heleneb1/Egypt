@@ -9,6 +9,7 @@ import com.example.egypt.repository.CommentRepository;
 
 import com.example.egypt.repository.QuizRepository;
 import com.example.egypt.repository.UserRepository;
+import com.example.egypt.services.BeanUtils;
 import com.example.egypt.services.CommentService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -155,6 +156,64 @@ public class CommentController {
 
                 return ResponseEntity.ok(updatedArticle);
         }
+
+        // @PutMapping("{authorId}/articles/{articleId}/add-comment")
+        // public ResponseEntity<CommentDTO> addCommentToArticle(
+        // @PathVariable UUID articleId,
+        // @RequestBody CommentDTO newCommentDTO,
+        // @PathVariable UUID authorId) {
+
+        // Article article = articleRepository.findById(articleId).orElseThrow(
+        // () -> new ResponseStatusException(
+        // HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
+
+        // User author = userRepository.findById(authorId).orElseThrow(
+        // () -> new ResponseStatusException(
+        // HttpStatus.NOT_FOUND, "Author Not Found: " + authorId));
+
+        // Comment newComment = new Comment();
+        // BeanUtils.copyNonNullProperties(newCommentDTO, newComment);
+        // newComment.setId(null);
+        // newComment.setArticle(article);
+        // newComment.setAuthor(author);
+        // newComment.setArchive(false);
+        // newComment.setCreationDate(LocalDateTime.now());
+
+        // article.getComments().add(newComment);
+
+        // article = articleRepository.save(article);
+
+        // CommentDTO addedCommentDTO = commentDTOMapper.convertToDTO(newComment);
+
+        // return ResponseEntity.ok(addedCommentDTO);
+        // }
+        // @PutMapping("{authorId}/articles/{articleId}/add-comment")
+        // public ResponseEntity<Article> addCommentToArticle(
+        // @PathVariable UUID articleId,
+        // @RequestBody Comment newComment,
+        // @PathVariable UUID authorId) {
+
+        // Article article = articleRepository.findById(articleId).orElseThrow(
+        // () -> new ResponseStatusException(
+        // HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
+
+        // User author = userRepository.findById(authorId).orElseThrow(
+        // () -> new ResponseStatusException(
+        // HttpStatus.NOT_FOUND, "Author Not Found: " + authorId));
+
+        // newComment.setId(null);
+        // newComment.setArticle(article);
+        // newComment.setAuthor(author);
+        // newComment.setArchive(false);
+        // newComment.setCreationDate(LocalDateTime.now());
+        // newComment.setContent(newComment.getContent());
+
+        // article.getComments().add(newComment);
+
+        // Article updatedArticle = articleRepository.save(article);
+
+        // return ResponseEntity.ok(updatedArticle);
+        // }
 
         @DeleteMapping("/{id}")
         @ResponseStatus(HttpStatus.MOVED_PERMANENTLY)

@@ -25,6 +25,7 @@ public record UserDTO(UUID id,
         @JsonIgnore List<Comment> comments,
         @JsonIgnore List<Quiz> quiz,
         @JsonIgnore Set<Badge> badge) {
+
     public List<UUID> getCommentsIds() {
         return comments.stream()
                 .map(Comment::getId)

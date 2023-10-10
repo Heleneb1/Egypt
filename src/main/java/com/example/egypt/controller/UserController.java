@@ -1,7 +1,9 @@
 package com.example.egypt.controller;
 
+import com.example.egypt.DTO.ArticleDTO;
 import com.example.egypt.DTO.UserDTO;
 import com.example.egypt.DTOMapper.UserDTOMapper;
+import com.example.egypt.entity.Article;
 import com.example.egypt.entity.Badge;
 import com.example.egypt.entity.User;
 import com.example.egypt.repository.BadgeRepository;
@@ -46,10 +48,11 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public User getById(@PathVariable UUID id) {
-        return this.userRepository
+    public UserDTO getById(@PathVariable UUID id) {
+        User user = this.userRepository
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        return userDTOMapper.convertToDTO(user);
     }
 
     @GetMapping("")
@@ -152,7 +155,7 @@ public class UserController {
             Files.write(path, bytes, StandardOpenOption.CREATE);
 
             Map<String, String> response = new HashMap<>();
-            response.put("avatarUrl", "/avatars/" + userId.toString() + "." + extension);
+            response.put("avatarUrl", "/avatar/" + userId.toString() + "." + extension);
             this.userRepository.findById(userId).ifPresent(user -> {
                 user.setAvatar(userId.toString() + "." + extension);
                 this.userRepository.save(user);

@@ -17,7 +17,7 @@ public class CommentDTOMapper implements Function<Comment, CommentDTO> {
                 comment.getContent(),
                 comment.getCreationDate(),
                 comment.getArchive(),
-                comment.getAuthor().getId(),
+                comment.getAuthor() == null ? null : comment.getAuthor().getId(),
                 comment.getQuiz(),
                 comment.getArticle());
     }

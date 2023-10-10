@@ -12,28 +12,26 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-
 @Service
 public class ArticleService {
 
-    private static ArticleRepository articleRepository;
-    private static ArticleDTOMapper articleDTOMapper;
+    private final ArticleRepository articleRepository;
+    private final ArticleDTOMapper articleDTOMapper;
     private final QuizRepository quizRepository;
 
-
     public ArticleService(ArticleRepository articleRepository,
-                          ArticleDTOMapper articleDTOMapper,
-                          QuizRepository quizRepository) {
+            ArticleDTOMapper articleDTOMapper,
+            QuizRepository quizRepository) {
         this.articleRepository = articleRepository;
         this.articleDTOMapper = articleDTOMapper;
         this.quizRepository = quizRepository;
+
     }
 
-    public static Optional<ArticleDTO> findById(UUID id) {
+    public Optional<ArticleDTO> findById(UUID id) {
         return articleRepository.findById(id)
                 .map(articleDTOMapper::convertToDTO);
     }
-
 
     public List<ArticleDTO> findByQuiz(UUID quizId) {
         List<Article> articles = articleRepository.findByQuizzesId(quizId);
@@ -64,7 +62,8 @@ public class ArticleService {
     }
 
     public List<ArticleDTO> searchArticleByTitleOrAuthorOrTag(String title, String author, String tag) {
-        List<Article> articles = articleRepository.findArticleByTitleOrAuthorOrTagIsContainingIgnoreCase(title, author, tag);
+        List<Article> articles = articleRepository.findArticleByTitleOrAuthorOrTagIsContainingIgnoreCase(title, author,
+                tag);
         return articles.stream()
                 .map(articleDTOMapper::convertToDTO)
                 .collect(Collectors.toList());
@@ -78,5 +77,3 @@ public class ArticleService {
     }
 
 }
-
-
