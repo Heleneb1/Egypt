@@ -60,7 +60,7 @@ public class QuestionController {
         return this.questionRepository.save(newQuestion);
     }
 
-    @PostMapping("/category/{category}")
+    @GetMapping("/category/{category}")
     public List<QuestionDTO> getByCategory(@PathVariable String category) {
         QuestionService questionService = new QuestionService(questionRepository, questionDTOMapper,
                 questionRepository);

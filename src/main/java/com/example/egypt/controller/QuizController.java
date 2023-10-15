@@ -68,20 +68,14 @@ public class QuizController {
                 return quizDTOs;
         }
 
-        @PostMapping("/create/{userId}")
+        @PostMapping("/create")
         @ResponseStatus(HttpStatus.CREATED)
         public Quiz createQuiz(
-                        @PathVariable UUID userId,
+
                         @RequestBody Quiz newQuiz) {
-                User user = userRepository
-                                .findById(userId)
-                                .orElseThrow(
-                                                () -> new ResponseStatusException(
-                                                                HttpStatus.NOT_FOUND, "Not Found" + userId));
 
                 LocalDateTime localDateTimeNow = LocalDateTime.now();
                 newQuiz.setCreationDate(localDateTimeNow);
-                newQuiz.setAuthor(user);
                 newQuiz.setArchive(newQuiz.getArchive());
                 newQuiz.setContent(newQuiz.getContent());
                 return this.quizRepository.save(newQuiz);
