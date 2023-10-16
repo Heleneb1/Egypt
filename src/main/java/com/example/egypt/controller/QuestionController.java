@@ -1,11 +1,14 @@
 package com.example.egypt.controller;
 
+import com.example.egypt.DTO.ArticleDTO;
 import com.example.egypt.DTO.QuestionDTO;
 import com.example.egypt.DTOMapper.QuestionDTOMapper;
 import com.example.egypt.entity.*;
 import com.example.egypt.repository.*;
+import com.example.egypt.services.BeanUtils;
 import com.example.egypt.services.QuestionService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -58,6 +61,17 @@ public class QuestionController {
             @RequestBody Question newQuestion) {
 
         return this.questionRepository.save(newQuestion);
+    }
+    @PutMapping("/{id}")
+    public ResponseEntity<QuestionDTO> updateQuestion(
+            @PathVariable UUID id, @RequestBody QuestionDTO questionDTO) {
+        Question updatedQuestion = questionRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Question not found: " + id));
+        BeanUtils.copyNonNullProperties(questionDTO, updatedQuestion);
+        Question savedQuestion = questionRepository.save(updatedQuestion);
+        QuestionDTO updatedQuestionDTO = questionDTOMapper.convertToDTO(savedQuestion);
+        return ResponseEntity.ok(updatedQuestionDTO);
     }
 
     @GetMapping("/category/{category}")
