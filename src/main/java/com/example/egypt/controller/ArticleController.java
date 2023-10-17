@@ -23,6 +23,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -252,11 +253,10 @@ public class ArticleController {
     // }
 
     @PutMapping("/{id}/add-rating")
-    public ResponseEntity<ArticleDTO> addRating(
+    public ResponseEntity<Article> addRating(
             @PathVariable UUID id,
-            @RequestBody List<Float> newRatings,
-            @Validated ArticleDTO addRating) {
-
+            @RequestBody Map<String, Float> payload){
+        Float newRating = payload.get("rating");
         Article article = articleRepository.findById(id)
                 .orElseThrow(
                         () -> new ResponseStatusException(
@@ -267,22 +267,22 @@ public class ArticleController {
             currentRating = 0.0f;
         }
 
-        Float sumOfRatings = currentRating;
-        for (Float newRating : newRatings) {
-            sumOfRatings += newRating;
-        }
+        Float sumOfRatings = currentRating + newRating;
 
-        Float averageRating = sumOfRatings / (newRatings.size() + 1); // +1 pour inclure la note actuelle./
 
+
+        Float averageRating = sumOfRatings / 2; // Nous avons seulement deux notes : l'actuelle et la nouvelle
+
+        // Arrondissez la moyenne à un chiffre après la virgule
         float roundedAverage = Math.round(averageRating * 10.0f) / 10.0f;
 
+
         article.setRating(roundedAverage);
-        BeanUtils.copyNonNullProperties(addRating, article);
+
 
         Article updatedArticle = articleRepository.save(article);
-        ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(updatedArticle);
 
-        return ResponseEntity.ok(updatedArticleDTO);
+        return ResponseEntity.ok(updatedArticle);
     }
 
     @DeleteMapping("/{id}")

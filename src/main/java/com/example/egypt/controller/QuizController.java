@@ -192,38 +192,69 @@ public class QuizController {
                 return ResponseEntity.ok(updatedQuiz);
         }
 
-        @PutMapping("/{id}/add-rating")
-        public ResponseEntity<Quiz> addRating(
-                        @PathVariable UUID id,
-                        @RequestBody List<Float> newRatings) {
+//        @PutMapping("/{id}/add-rating")
+//        public ResponseEntity<Quiz> addRating(
+//                        @PathVariable UUID id,
+//                        @RequestBody List<Float> newRatings) {
+//
+//                Quiz quiz = quizRepository.findById(id).orElseThrow(
+//                                () -> new ResponseStatusException(
+//                                                HttpStatus.NOT_FOUND, "Quiz Not Found: " + id));
+//
+//                Float currentRating = quiz.getRating();
+//                if (currentRating == null) {
+//                        currentRating = 0.0f;
+//                }
+//
+//                // Additionnez les nouvelles notes à la note actuelle
+//                Float sumOfRatings = currentRating;
+//                for (Float newRating : newRatings) {
+//                        sumOfRatings += newRating;
+//                }
+//
+//                // Calcul de la moyenne
+//                Float averageRating = sumOfRatings / (newRatings.size() + 1); // +1 pour inclure la note actuelle
+//
+//                // Arrondissez la moyenne à un chiffre après la virgule
+//                float roundedAverage = Math.round(averageRating * 10.0f) / 10.0f;
+//
+//                quiz.setRating(roundedAverage);
+//
+//                Quiz updatedQuiz = quizRepository.save(quiz);
+//
+//                return ResponseEntity.ok(updatedQuiz);
+//        }
+@PutMapping("/{id}/add-rating")
+public ResponseEntity<Quiz> addRating(
+        @PathVariable UUID id,
+        @RequestBody Map<String, Float> payload) {
 
-                Quiz quiz = quizRepository.findById(id).orElseThrow(
-                                () -> new ResponseStatusException(
-                                                HttpStatus.NOT_FOUND, "Quiz Not Found: " + id));
+        Float newRating = payload.get("rating");
 
-                Float currentRating = quiz.getRating();
-                if (currentRating == null) {
-                        currentRating = 0.0f;
-                }
+        Quiz quiz = quizRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Quiz Not Found: " + id));
 
-                // Additionnez les nouvelles notes à la note actuelle
-                Float sumOfRatings = currentRating;
-                for (Float newRating : newRatings) {
-                        sumOfRatings += newRating;
-                }
-
-                // Calcul de la moyenne
-                Float averageRating = sumOfRatings / (newRatings.size() + 1); // +1 pour inclure la note actuelle
-
-                // Arrondissez la moyenne à un chiffre après la virgule
-                float roundedAverage = Math.round(averageRating * 10.0f) / 10.0f;
-
-                quiz.setRating(roundedAverage);
-
-                Quiz updatedQuiz = quizRepository.save(quiz);
-
-                return ResponseEntity.ok(updatedQuiz);
+        Float currentRating = quiz.getRating();
+        if (currentRating == null) {
+                currentRating = 0.0f;
         }
+
+        // Additionnez les nouvelles notes à la note actuelle
+        Float sumOfRatings = currentRating + newRating;
+
+        // Calcul de la moyenne
+        Float averageRating = sumOfRatings / 2; // Nous avons seulement deux notes : l'actuelle et la nouvelle
+
+        // Arrondissez la moyenne à un chiffre après la virgule
+        float roundedAverage = Math.round(averageRating * 10.0f) / 10.0f;
+
+        quiz.setRating(roundedAverage);
+
+        Quiz updatedQuiz = quizRepository.save(quiz);
+
+        return ResponseEntity.ok(updatedQuiz);
+}
 
         @DeleteMapping("/{id}/badges/remove")
         public ResponseEntity<QuizDTO> removeBadgeFromQuiz(@PathVariable UUID id) {
