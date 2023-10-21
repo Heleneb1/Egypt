@@ -34,7 +34,7 @@ public class ArticleController {
     private QuizRepository quizRepository;
     private UserRepository userRepository;
     private CommentRepository commentRepository;
-    private final ArticleDTOMapper articleDTOMapper;
+    private ArticleDTOMapper articleDTOMapper;
 
     ArticleController(ArticleRepository articleRepository,
             QuizRepository quizRepository,
@@ -72,15 +72,14 @@ public class ArticleController {
         return articles;
     }
 
-    @GetMapping("/search")
-    public List<ArticleDTO> searchArticle(@RequestParam(required = false) String title,
-            @RequestParam(required = false) String author,
-            @RequestParam(required = false) String tag) {
+    @GetMapping("/search/{query}")
+    public List<ArticleDTO> searchArticle(@PathVariable String query) {
         ArticleService articleService = new ArticleService(articleRepository, articleDTOMapper, quizRepository);
-        List<ArticleDTO> articles = articleService.searchArticleByTitleOrAuthorOrTag(title, author, tag);
+        List<ArticleDTO> articles = articleService.searchArticleByTitleOrAuthorOrTag(query, query, query);
 
         return articles;
     }
+
 
     @GetMapping("/byTag/{tag}")
     public List<ArticleDTO> getByTag(@PathVariable String tag) {

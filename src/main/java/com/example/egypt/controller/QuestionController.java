@@ -68,6 +68,12 @@ public class QuestionController {
         return questionDTOS;
     }
 
+@PutMapping("{id}")
+@ResponseStatus(HttpStatus.ACCEPTED)
+public Question update(@PathVariable UUID id,@RequestBody Question questionUpdated){
+        questionUpdated.setId(id);
+        return this.questionRepository.save(questionUpdated);
+}
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         this.questionRepository.deleteById(id);

@@ -77,7 +77,9 @@ public class AuthController {
         cookie.setHttpOnly(false);
         cookie.getValue();
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
+//        cookie.setMaxAge(60 * 60);
+        int maxAge = (user.getRole() == Role.ADMIN) ? 7200 : 3600;
+        cookie.setMaxAge(maxAge);
         response.addCookie(cookie);
         return (User) authentication.getPrincipal();
     }
