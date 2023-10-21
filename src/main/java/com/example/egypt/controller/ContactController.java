@@ -21,7 +21,7 @@ public class ContactController {
         return "Succès, Message envoyé!";
     }
 
-    @PostMapping("")
+    @PostMapping("/send")
     public ResponseEntity<String> send(@RequestBody Contact contact) {
         Dotenv dotenv = Dotenv.load();
         String adminEmail = dotenv.get("ADMIN_EMAIL");
@@ -31,7 +31,8 @@ public class ContactController {
                     + "Adresse: " + contact.getEmail() + "\n"
                     + "Message: " + contact.getContent();
 
-            emailSenderService.sendEmail(contact.getUsername(), contact.getEmail(), adminEmail, content);
+            emailSenderService.sendEmail(contact.getUsername(), contact.getEmail(), contact.getContent());
+
 
             return ResponseEntity.ok("Message envoyé avec succès !");
         } catch (Exception exception) {

@@ -4,13 +4,16 @@ import org.springframework.stereotype.Service;
 
 @Service
 
+
 public interface EmailSenderService {
 
-    // Method to send an email.
-    void sendEmail(
+        void sendEmail(
             String name,
             String fromAddress,
-            String toAddress,
-            String body
+            String text
+
     ) throws Exception;
+
+
+
 }

@@ -47,7 +47,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
                 auth.requestMatchers(new AntPathRequestMatcher("/articles/**")).permitAll();
                 auth.requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated();
                 auth.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll();
-                auth.requestMatchers(new AntPathRequestMatcher("/contact")).permitAll();
+                auth.requestMatchers(new AntPathRequestMatcher("/contact/**")).permitAll();
                 auth.requestMatchers(new AntPathRequestMatcher("/admin")).hasRole("ADMIN");
                 auth.anyRequest().authenticated();
             })
