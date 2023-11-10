@@ -1,12 +1,14 @@
 package com.example.egypt.controller;
 
 import com.example.egypt.DTO.BadgeDTO;
+import com.example.egypt.DTO.QuizDTO;
 import com.example.egypt.DTOMapper.BadgeDTOMapper;
 
 import com.example.egypt.entity.Badge;
 import com.example.egypt.repository.BadgeRepository;
 
 import com.example.egypt.services.BadgeService;
+import com.example.egypt.services.QuizService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
@@ -23,7 +25,6 @@ public class BadgeController {
     BadgeController(BadgeRepository badgeRepository, BadgeDTOMapper badgeDTOMapper) {
         this.badgeRepository = badgeRepository;
         this.badgeDTOMapper = badgeDTOMapper;
-
     }
 
     @GetMapping
@@ -31,7 +32,6 @@ public class BadgeController {
         BadgeService badgeService = new BadgeService(
                 badgeRepository, badgeDTOMapper);
         List<BadgeDTO> badgeDTOS = badgeService.findAll();
-
         return badgeDTOS;
     }
 
@@ -41,7 +41,14 @@ public class BadgeController {
                 .findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
         return badgeDTOMapper.convertToDTO(badge);
+    }
 
+    @GetMapping("/name/{name}")
+    public List<BadgeDTO> getQuizByTitle(@PathVariable String name) {
+        BadgeService badgeService = new BadgeService(
+                badgeRepository, badgeDTOMapper);
+        List<BadgeDTO> badges = badgeService.findByName(name);
+        return badges;
     }
 
     @PostMapping("/create")
@@ -57,7 +64,7 @@ public class BadgeController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.MOVED_PERMANENTLY)
+    @ResponseStatus(HttpStatus.ACCEPTED)
     public void delete(@PathVariable UUID id) {
         this.badgeRepository.deleteById(id);
     }

@@ -53,27 +53,26 @@ public class Article {
     private String author;
     @Column(nullable = true, name = "image")
     private String image;
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "article_quiz", joinColumns = @JoinColumn(name = "article_id"), inverseJoinColumns = @JoinColumn(name = "quiz_id"))
     private List<Quiz> quizzes;
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
     private Boolean archive = false;
     @Column(name = "comment")
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-    // @JsonBackReference
     private List<Comment> comments = new ArrayList<>();
     // @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     // @JsonIgnore // Exclure la sérialisation des commentaires
     // private List<Comment> comments;
-    @OneToMany(mappedBy = "article")
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Rating> ratings;
 
     public Article() {
     }
 
     public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate,
-            Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings,
-            String author) {
+                   Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments,
+                   String author) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -84,7 +83,7 @@ public class Article {
         this.quizzes = quizzes;
         this.archive = archive;
         this.comments = comments;
-        this.ratings = ratings;
+
         this.author = author;
     }
 
@@ -160,13 +159,13 @@ public class Article {
         this.comments = comments;
     }
 
-    public List<Rating> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
-    }
+//    public List<Rating> getRatings() {
+//        return ratings;
+//    }
+//
+//    public void setRatings(List<Rating> ratings) {
+//        this.ratings = ratings;
+//    }
 
     public String getAuthor() {
         return author;

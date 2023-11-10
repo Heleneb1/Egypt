@@ -24,7 +24,9 @@ public class Comment {
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
     private Boolean archive;
 
+
     @ManyToOne
+    @JoinColumn(name = "author_id")
     private User author;
 
     @ManyToOne
@@ -32,16 +34,15 @@ public class Comment {
     private Quiz quiz;
 
     @ManyToOne
-    // @JsonManagedReference
-    @JoinColumn(name = "article_id")
 
+    @JoinColumn(name = "article_id")
     private Article article;
 
     public Comment() {
     }
 
     public Comment(UUID id, String content, LocalDateTime creationDate, Boolean archive, User author, Quiz quiz,
-            Article article) {
+                   Article article) {
         this.id = id;
         this.content = content;
         this.creationDate = creationDate;
@@ -84,6 +85,7 @@ public class Comment {
     }
 
     public User getAuthor() {
+        System.out.println("Auteur"+author);
         return author;
     }
 

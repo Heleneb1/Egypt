@@ -16,9 +16,7 @@ public class BadgeDTOMapper implements Function<Badge, BadgeDTO> {
                 badge.getId(),
                 badge.getName(),
                 badge.getDescription(),
-                badge.getImage(),
-                badge.getUser()
-
+                badge.getImage()
         );
     }
 

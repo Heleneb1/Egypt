@@ -20,11 +20,11 @@ public class QuestionController {
     private static QuestionDTOMapper questionDTOMapper;
 
     QuestionController(QuestionRepository questionRepository,
-            UserRepository userRepository,
-            BadgeRepository badgeRepository,
-            CommentRepository commentRepository,
-            ArticleRepository articleRepository,
-            QuestionDTOMapper questionDTOMapper) {
+                       UserRepository userRepository,
+                       BadgeRepository badgeRepository,
+                       CommentRepository commentRepository,
+                       ArticleRepository articleRepository,
+                       QuestionDTOMapper questionDTOMapper) {
         this.questionRepository = questionRepository;
 
         this.questionDTOMapper = questionDTOMapper;
@@ -68,12 +68,13 @@ public class QuestionController {
         return questionDTOS;
     }
 
-@PutMapping("{id}")
-@ResponseStatus(HttpStatus.ACCEPTED)
-public Question update(@PathVariable UUID id,@RequestBody Question questionUpdated){
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Question update(@PathVariable UUID id, @RequestBody Question questionUpdated) {
         questionUpdated.setId(id);
         return this.questionRepository.save(questionUpdated);
-}
+    }
+
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {
         this.questionRepository.deleteById(id);

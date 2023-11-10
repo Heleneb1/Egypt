@@ -1,8 +1,8 @@
 package com.example.egypt.services;
 
 import com.example.egypt.DTO.UserDTO;
-import com.example.egypt.entity.User;
 import com.example.egypt.DTOMapper.UserDTOMapper;
+import com.example.egypt.entity.User;
 import com.example.egypt.repository.UserRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,7 +15,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 
-
 @Service
 public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
@@ -25,7 +24,6 @@ public class UserService implements UserDetailsService {
         this.userRepository = userRepository;
         this.userDTOMapper = userDTOMapper;
     }
-
 
 
     @Override

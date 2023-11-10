@@ -11,12 +11,12 @@ public record BadgeDTO(
         UUID id,
         String name,
         String description,
-        String image,
-        @JsonIgnore Set<User> user
+        String image
+//        @JsonIgnore Set<User> user
 ) {
-    public Set<UUID> getUsersIds() {
-        return user.stream()
-                .map(User::getId)
-                .collect(Collectors.toSet());
-    }
+//    public Set<UUID> getUsersIds() {
+//        return user.stream()
+//                .map(User::getId)
+//                .collect(Collectors.toSet());
+//    }
 }

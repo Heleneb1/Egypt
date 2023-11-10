@@ -1,5 +1,6 @@
 package com.example.egypt.services;
 
+import com.example.egypt.entity.MessageType;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailSenderServiceImpl implements EmailSenderService {
-  private final JavaMailSender emailSender;
+    private final JavaMailSender emailSender;
 
 
     private final String adminEmail;
@@ -19,6 +20,11 @@ public class EmailSenderServiceImpl implements EmailSenderService {
         this.emailSender = emailSender;
         Dotenv dotenv = Dotenv.load(); // Charge le fichier .env
         adminEmail = dotenv.get("ADMIN_EMAIL"); // Initialise adminEmail avec la valeur de ADMIN_EMAIL du fichier .env
+
+    }
+
+    @Override
+    public void sendEmail(String name, String fromAddress, String text, MessageType messageType) throws Exception {
 
     }
 
@@ -42,9 +48,26 @@ public class EmailSenderServiceImpl implements EmailSenderService {
                 "\n\nLes Mystères de l'Égypte Antique");
 
         emailSender.send(responseMessage);
+    }
+
+        @Override
+        public void sendNoRespectMessage(
+                String authorName,
+                String fromAddress,
+                String body) throws Exception {
+
+
+        SimpleMailMessage noRespectMessage = new SimpleMailMessage();
+        noRespectMessage.setFrom("noreply@mysteresegypteantique.com"); // Remplacez par l'adresse de l'administrateur
+        noRespectMessage.setTo(fromAddress); // Adresse de l'expéditeur
+        noRespectMessage.setSubject("Re : Suite à votre commentaire ");
+        noRespectMessage.setText("Bonjour " + authorName + ".\n\nVotre message ne respecte pas notre charte de bonne conduite , il ne sera pas mis en ligne." +
+                "\n\nLes Mystères de l'Égypte Antique");
+
+        emailSender.send(noRespectMessage);
 
     }
 
 
-
 }
+

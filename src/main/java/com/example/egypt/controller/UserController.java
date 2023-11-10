@@ -40,8 +40,8 @@ public class UserController {
     private static final String AVATAR_FOLDER = "src/main/resources/static/avatars/";
 
     UserController(UserRepository userRepository,
-            UserDTOMapper userDTOMapper,
-            BadgeRepository badgeRepository) {
+                   UserDTOMapper userDTOMapper,
+                   BadgeRepository badgeRepository) {
         this.userRepository = userRepository;
         this.userDTOMapper = userDTOMapper;
         this.badgeRepository = badgeRepository;
@@ -68,20 +68,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
     }
 
-    // @PutMapping("/{id}")
-    // public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
-    // @RequestBody @Validated User userDTO) {
-    // User updatedUser = userRepository.findById(id)
-    // .orElseThrow(() -> new ResponseStatusException(
-    // HttpStatus.NOT_FOUND, "Promotion not found: " + id));
-    //
-    // BeanUtils.copyNonNullProperties(userDTO, updatedUser);
-    // User savedUser = userRepository.save(updatedUser);
-    //
-    // UserDTO updatedPromotionDTO = userDTOMapper.convertToDTO(savedUser);
-    // return ResponseEntity.ok(updatedPromotionDTO);
-    //
-    // }
+
     @PutMapping("/{userId}/badges/{badgeId}")
     public ResponseEntity<UserDTO> awardBadgeToUser(
             @PathVariable UUID userId,
@@ -106,7 +93,7 @@ public class UserController {
 
     @PutMapping("/{id}")
     public ResponseEntity<UserDTO> updateUser(@PathVariable UUID id,
-            @RequestBody @Validated User userDTO) {
+                                              @RequestBody @Validated User userDTO) {
         User updatedUser = userRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "User not found: " + id));
@@ -138,7 +125,7 @@ public class UserController {
 
     @PutMapping("/{userId}/avatar")
     public ResponseEntity<Map<String, String>> uploadAvatar(@PathVariable UUID userId,
-            @RequestParam("avatar") MultipartFile avatar) {
+                                                            @RequestParam("avatar") MultipartFile avatar) {
         try {
             if (!Objects.requireNonNull(avatar.getContentType()).startsWith("image/")) {
                 throw new IllegalArgumentException("File must be an image");
@@ -176,6 +163,32 @@ public class UserController {
 
         return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
     }
+
+    @GetMapping("/avatar/user/{userId}")
+    public ResponseEntity<byte[]> getUserAvatar(@PathVariable String userId) {
+        User user = userRepository.findById(UUID.fromString(userId)).orElse(null);
+
+        if (user == null || user.getAvatar() == null) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        String avatarFilename = user.getAvatar();
+        String avatarPath = AVATAR_FOLDER + avatarFilename;
+
+        try {
+            byte[] imageBytes = Files.readAllBytes(Paths.get(avatarPath));
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_PNG);
+
+            return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
+        } catch (IOException e) {
+
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable UUID id) {

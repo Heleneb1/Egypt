@@ -23,7 +23,7 @@ public class QuizDTOMapper implements Function<Quiz, QuizDTO> {
                 quiz.getRating(),
                 quiz.getArchive(),
                 quiz.getAuthor() == null ? null : quiz.getAuthor().getId(), // en cas d'auteur null pour eviter
-                                                                            // nullPointerException
+                // nullPointerException
                 quiz.getBadge() == null ? null : quiz.getBadge().getId(),
                 quiz.getArticles(),
                 quiz.getComments(),

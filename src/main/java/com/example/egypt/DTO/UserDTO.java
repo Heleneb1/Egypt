@@ -1,6 +1,7 @@
 package com.example.egypt.DTO;
 
 //import com.example.egypt.config.GrantedAuthoritySerializer;
+
 import com.example.egypt.entity.Badge;
 import com.example.egypt.entity.Comment;
 import com.example.egypt.entity.Quiz;
@@ -13,7 +14,8 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-public record UserDTO(UUID id,
+public record UserDTO(
+        UUID id,
         String avatar,
         String biography,
         String lastname,

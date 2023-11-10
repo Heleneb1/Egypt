@@ -18,8 +18,8 @@ public class QuestionService {
     private static QuestionDTOMapper questionDTOMapper;
 
     public QuestionService(QuestionRepository questionRepository,
-            QuestionDTOMapper questionDTOMapper,
-            QuestionRepository repository) {
+                           QuestionDTOMapper questionDTOMapper,
+                           QuestionRepository repository) {
 
         this.questionRepository = questionRepository;
         this.questionDTOMapper = questionDTOMapper;

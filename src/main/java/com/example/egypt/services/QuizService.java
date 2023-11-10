@@ -1,12 +1,9 @@
 package com.example.egypt.services;
 
 import com.example.egypt.DTO.QuizDTO;
-
 import com.example.egypt.DTOMapper.QuizDTOMapper;
-
 import com.example.egypt.entity.Question;
 import com.example.egypt.entity.Quiz;
-
 import com.example.egypt.repository.QuestionRepository;
 import com.example.egypt.repository.QuizRepository;
 import org.springframework.stereotype.Service;
@@ -24,8 +21,8 @@ public class QuizService {
     private QuestionRepository questionRepository;
 
     public QuizService(QuizRepository quizRepository,
-            QuizDTOMapper quizDTOMapper,
-            QuestionRepository questionRepository) {
+                       QuizDTOMapper quizDTOMapper,
+                       QuestionRepository questionRepository) {
 
         this.quizRepository = quizRepository;
         this.quizDTOMapper = quizDTOMapper;
@@ -42,6 +39,13 @@ public class QuizService {
     public static Optional<QuizDTO> findById(UUID id) {
         return quizRepository.findById(id)
                 .map(quizDTOMapper::convertToDTO);
+    }
+
+    public List<QuizDTO> findByTitle(String title) {
+        List<Quiz> quizzes = quizRepository.findByTitleContainingIgnoreCase(title);
+        return quizzes.stream()
+                .map(quizDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
     }
 
     public List<QuizDTO> findByAuthor(UUID authorId) {

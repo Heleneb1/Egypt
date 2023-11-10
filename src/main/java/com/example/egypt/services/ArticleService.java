@@ -1,7 +1,6 @@
 package com.example.egypt.services;
 
 import com.example.egypt.DTO.ArticleDTO;
-
 import com.example.egypt.DTOMapper.ArticleDTOMapper;
 import com.example.egypt.entity.Article;
 import com.example.egypt.repository.ArticleRepository;
@@ -21,8 +20,8 @@ public class ArticleService {
     private final QuizRepository quizRepository;
 
     public ArticleService(ArticleRepository articleRepository,
-            ArticleDTOMapper articleDTOMapper,
-            QuizRepository quizRepository) {
+                          ArticleDTOMapper articleDTOMapper,
+                          QuizRepository quizRepository) {
         this.articleRepository = articleRepository;
         this.articleDTOMapper = articleDTOMapper;
         this.quizRepository = quizRepository;
@@ -42,7 +41,7 @@ public class ArticleService {
     }
 
     public List<ArticleDTO> findByAuthor(String author) {
-        List<Article> articles = articleRepository.findArticlesByAuthorContaining(author);
+        List<Article> articles = articleRepository.findArticlesByAuthorContainingIgnoreCase(author);
         return articles.stream()
                 .map(articleDTOMapper::convertToDTO)
                 .collect(Collectors.toList());

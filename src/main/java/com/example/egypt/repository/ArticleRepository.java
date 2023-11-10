@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Repository
 public interface ArticleRepository extends JpaRepository<Article, UUID> {
-    List<Article> findArticlesByAuthorContaining(String author);
+    List<Article> findArticlesByAuthorContainingIgnoreCase(String author);
 
     List<Article> findArticleByTitleOrAuthorOrTagIsContainingIgnoreCase(String title, String author, String tag);
 

@@ -22,7 +22,7 @@ public record ArticleDTO(
         Boolean archive,
 
         @JsonIgnore List<Comment> comments,
-        @JsonIgnore Float ratings) {
+        Float ratings) {
     public LocalDateTime setEditionDate(LocalDateTime localDateTimeNow) {
         return localDateTimeNow;
     }
@@ -39,10 +39,11 @@ public record ArticleDTO(
                 .collect(Collectors.toSet());
     }
 
-    public List<UUID> getRatingsIds(List<Rating> ratings) {
-        return ratings.stream()
-                .map(Rating::getId)
-                .collect(Collectors.toList());
-    }
+//    public List<UUID> getRatingsIds(List<Rating> ratings) {
+//        return ratings.stream()
+//                .map(Rating::getId)
+//                .collect(Collectors.toList());
+//    }
+
 
 }

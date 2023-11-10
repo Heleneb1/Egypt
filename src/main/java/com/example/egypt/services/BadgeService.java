@@ -2,9 +2,7 @@ package com.example.egypt.services;
 
 import com.example.egypt.DTO.BadgeDTO;
 import com.example.egypt.DTOMapper.BadgeDTOMapper;
-
 import com.example.egypt.entity.Badge;
-
 import com.example.egypt.repository.BadgeRepository;
 import org.springframework.stereotype.Service;
 
@@ -36,11 +34,10 @@ public class BadgeService {
                 .collect(Collectors.toList());
     }
 
-    // public Badge createBadge(String name, String description, String image) {
-    // Badge badge = new Badge();
-    // badge.setName(name);
-    // badge.setDescription(description);
-    // badge.setImage(image);
-    // return badgeRepository.save(badge);
-    // }
+    public List<BadgeDTO> findByName(String name) {
+        List<Badge> badges = badgeRepository.findByNameContainingIgnoreCase(name);
+        return badges.stream()
+                .map(badgeDTOMapper::convertToDTO)
+                .collect(Collectors.toList());
+    }
 }

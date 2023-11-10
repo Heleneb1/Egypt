@@ -38,23 +38,25 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-@Bean
-public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    return http.csrf(AbstractHttpConfigurer::disable)
-            .cors(Customizer.withDefaults())
-            .authorizeHttpRequests(auth -> {
-                auth.requestMatchers(new AntPathRequestMatcher("/api/auth/*")).permitAll();
-                auth.requestMatchers(new AntPathRequestMatcher("/articles/**")).permitAll();
-                auth.requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated();
-                auth.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll();
-                auth.requestMatchers(new AntPathRequestMatcher("/contact/**")).permitAll();
-                auth.requestMatchers(new AntPathRequestMatcher("/admin")).hasRole("ADMIN");
-                auth.anyRequest().authenticated();
-            })
-            .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .build();
-}
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        return http.csrf(AbstractHttpConfigurer::disable)
+                .cors(Customizer.withDefaults())
+                .authorizeHttpRequests(auth -> {
+                    auth.requestMatchers(new AntPathRequestMatcher("/api/auth/*")).permitAll();
+                    auth.requestMatchers(new AntPathRequestMatcher("/articles/**")).permitAll();
+                    auth.requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated();
+                    auth.requestMatchers(new AntPathRequestMatcher("/users/avatar/user/{userId}")).permitAll();
+                    auth.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll();
+                    auth.requestMatchers(new AntPathRequestMatcher("/contact/**")).permitAll();
+                    auth.requestMatchers(new AntPathRequestMatcher("/admin")).hasRole("ADMIN");
+                    auth.anyRequest().authenticated();
+                })
+                .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .build();
+    }
+
     @Bean
     public JwtEncoder jwtEncoder() {
         SecretKey key = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");

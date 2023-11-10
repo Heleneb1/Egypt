@@ -1,22 +1,15 @@
 package com.example.egypt.entity;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
-
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 
@@ -52,7 +45,7 @@ public class User implements UserDetails {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @OneToMany(mappedBy = "author")
+    @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
     @OneToMany(mappedBy = "author")
@@ -66,7 +59,7 @@ public class User implements UserDetails {
     }
 
     public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email,
-            String password, List<Comment> comments, List<Quiz> quizzes, Set<Badge> badges) {
+                String password, List<Comment> comments, List<Quiz> quizzes, Set<Badge> badges) {
         this.id = id;
         this.avatar = avatar;
         this.biography = biography;
