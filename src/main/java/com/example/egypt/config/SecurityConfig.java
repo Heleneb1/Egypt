@@ -1,6 +1,5 @@
 package com.example.egypt.config;
 
-
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.proc.SecurityContext;
@@ -19,6 +18,7 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import javax.crypto.SecretKey;
@@ -43,23 +43,18 @@ public class SecurityConfig {
         return http.csrf(AbstractHttpConfigurer::disable)
                 .cors(Customizer.withDefaults())
                 .authorizeHttpRequests(auth -> {
-
                     auth.requestMatchers(new AntPathRequestMatcher("/api/auth/*")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/articles/**")).permitAll();
-                   // auth.requestMatchers(new AntPathRequestMatcher("/comments/**")).authenticated();
                     auth.requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated();
+                    auth.requestMatchers(new AntPathRequestMatcher("/users/avatar/user/{userId}")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll();
-                    auth.requestMatchers(new AntPathRequestMatcher("/contact")).permitAll();
-                   // auth.requestMatchers("/contact").permitAll();
-                    auth.requestMatchers(new AntPathRequestMatcher("/coordinates/**")).permitAll();
+                    auth.requestMatchers(new AntPathRequestMatcher("/contact/**")).permitAll();
+                    auth.requestMatchers(new AntPathRequestMatcher("/admin")).hasRole("ADMIN");
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
-
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
-
-
     }
 
     @Bean

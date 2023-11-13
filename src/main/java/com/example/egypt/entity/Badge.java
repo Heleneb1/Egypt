@@ -10,26 +10,23 @@ import java.util.UUID;
 
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-@Table(name="badge")
+@Table(name = "badge")
 public class Badge {
     @Id
-    @GeneratedValue (strategy = GenerationType.UUID)
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    @Column (nullable = false, name="name")
+    @Column(nullable = false, name = "name")
     private String name;
     @Column(nullable = true, name = "description")
     private String description;
-    @Column(nullable = false, name ="image")
-    private  String image;
+    @Column(nullable = false, name = "image")
+    private String image;
     @OneToOne(mappedBy = "badge") // Mappé par le champ "badge" de la classe Quiz
     private Quiz quiz; // Le quiz associé à ce badge
 
-
-
-    @ManyToMany(mappedBy = "badges")
-    private Set<User> user = new HashSet<>();
-
-
+//    @ManyToMany(mappedBy = "badges")
+//
+//    private Set<User> user = new HashSet<>();
 
     public Badge() {
     }
@@ -39,25 +36,25 @@ public class Badge {
         this.name = name;
         this.description = description;
         this.image = image;
-        this.quiz = quiz;
-        this.user = user;
+//        this.quiz = quiz;
+//        this.user = user;
     }
 
-    public Set<User> getUser() {
-        return user;
-    }
+//    public Set<User> getUser() {
+//        return user;
+//    }
+//
+//    public void setUser(Set<User> user) {
+//        this.user = user;
+//    }
 
-    public void setUser(Set<User> user) {
-        this.user = user;
-    }
-
-    public Quiz getQuiz() {
-        return quiz;
-    }
-
-    public void setQuiz(Quiz quiz) {
-        this.quiz = quiz;
-    }
+//    public Quiz getQuiz() {
+//        return quiz;
+//    }
+//
+//    public void setQuiz(Quiz quiz) {
+//        this.quiz = quiz;
+//    }
 
     public UUID getId() {
         return id;

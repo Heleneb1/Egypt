@@ -20,11 +20,11 @@ public class QuestionController {
     private static QuestionDTOMapper questionDTOMapper;
 
     QuestionController(QuestionRepository questionRepository,
-            UserRepository userRepository,
-            BadgeRepository badgeRepository,
-            CommentRepository commentRepository,
-            ArticleRepository articleRepository,
-            QuestionDTOMapper questionDTOMapper) {
+                       UserRepository userRepository,
+                       BadgeRepository badgeRepository,
+                       CommentRepository commentRepository,
+                       ArticleRepository articleRepository,
+                       QuestionDTOMapper questionDTOMapper) {
         this.questionRepository = questionRepository;
 
         this.questionDTOMapper = questionDTOMapper;
@@ -60,12 +60,19 @@ public class QuestionController {
         return this.questionRepository.save(newQuestion);
     }
 
-    @PostMapping("/category/{category}")
+    @GetMapping("/category/{category}")
     public List<QuestionDTO> getByCategory(@PathVariable String category) {
         QuestionService questionService = new QuestionService(questionRepository, questionDTOMapper,
                 questionRepository);
         List<QuestionDTO> questionDTOS = questionService.searchQuestionByCategory(category);
         return questionDTOS;
+    }
+
+    @PutMapping("{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Question update(@PathVariable UUID id, @RequestBody Question questionUpdated) {
+        questionUpdated.setId(id);
+        return this.questionRepository.save(questionUpdated);
     }
 
     @DeleteMapping("/{id}")

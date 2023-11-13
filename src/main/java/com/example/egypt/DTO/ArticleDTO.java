@@ -1,6 +1,7 @@
 package com.example.egypt.DTO;
 
 import com.example.egypt.entity.*;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,9 +18,10 @@ public record ArticleDTO(
         String tag,
         String author,
         String image,
-        List<Quiz> quizzes,
+        @JsonIgnore List<Quiz> quizzes,
         Boolean archive,
-        List<Comment> comments,
+
+        @JsonIgnore List<Comment> comments,
         Float ratings) {
     public LocalDateTime setEditionDate(LocalDateTime localDateTimeNow) {
         return localDateTimeNow;
@@ -37,10 +39,11 @@ public record ArticleDTO(
                 .collect(Collectors.toSet());
     }
 
-    // public List<UUID> getRatingsIds(List<Rating> ratings) {
-    // return ratings.stream()
-    // .map(Rating::getId)
-    // .collect(Collectors.toList());
-    // }
+//    public List<UUID> getRatingsIds(List<Rating> ratings) {
+//        return ratings.stream()
+//                .map(Rating::getId)
+//                .collect(Collectors.toList());
+//    }
+
 
 }

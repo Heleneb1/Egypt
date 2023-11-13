@@ -1,7 +1,8 @@
 package com.example.egypt.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
@@ -10,8 +11,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+// TODOquand j'active cette ligne, j'ai une erreur de compilation a la
+// creation d'un article : Cannot invoke "com.fasterxml.jackson.databind.deser.impl.ReadableObjectId.bindItem(Object)" because "roid" is null]
+// 2023-10-10T10:02:33.318+02:00  WARN 14568 --- [nio-8080-exec-7] .w.s.m.s.DefaultHandlerExceptionResolver : Resolved [org.springframework.http.converter.HttpMessageNotReadableException: JSON parse error: Cannot invoke "com.fasterxml.jackson.databind.deser.impl.ReadableObjectId.bindItem(Object)" because "roid" is null]
+// mais ok pour la creation d'un commentaire idem avec
+// cette ligne sur user
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id")
+
 @Table(name = "article")
 public class Article {
 
@@ -22,7 +30,7 @@ public class Article {
     @Column(nullable = false, name = "title")
     private String title;
     @Lob
-    @Column(nullable = false, name = "content", length = 1000)
+    @Column(nullable = false, name = "content", length = 10000)
     private String content;
     @Column(nullable = true, name = "creation_date")
     private LocalDateTime creationDate;
@@ -45,7 +53,7 @@ public class Article {
     private String author;
     @Column(nullable = true, name = "image")
     private String image;
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     @JoinTable(name = "article_quiz", joinColumns = @JoinColumn(name = "article_id"), inverseJoinColumns = @JoinColumn(name = "quiz_id"))
     private List<Quiz> quizzes;
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
@@ -53,16 +61,18 @@ public class Article {
     @Column(name = "comment")
     @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "article")
+    // @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    // @JsonIgnore // Exclure la sérialisation des commentaires
+    // private List<Comment> comments;
+    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
     private List<Rating> ratings;
 
     public Article() {
     }
 
     public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate,
-            Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments, List<Rating> ratings,
-            String author) {
+                   Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments,
+                   String author) {
         this.id = id;
         this.title = title;
         this.content = content;
@@ -73,7 +83,7 @@ public class Article {
         this.quizzes = quizzes;
         this.archive = archive;
         this.comments = comments;
-        this.ratings = ratings;
+
         this.author = author;
     }
 
@@ -149,13 +159,13 @@ public class Article {
         this.comments = comments;
     }
 
-    public List<Rating> getRatings() {
-        return ratings;
-    }
-
-    public void setRatings(List<Rating> ratings) {
-        this.ratings = ratings;
-    }
+//    public List<Rating> getRatings() {
+//        return ratings;
+//    }
+//
+//    public void setRatings(List<Rating> ratings) {
+//        this.ratings = ratings;
+//    }
 
     public String getAuthor() {
         return author;
@@ -172,4 +182,5 @@ public class Article {
     public void setImage(String image) {
         this.image = image;
     }
+
 }

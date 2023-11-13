@@ -1,16 +1,24 @@
 package com.example.egypt.services;
 
+import com.example.egypt.entity.MessageType;
 import org.springframework.stereotype.Service;
 
 @Service
 
+
 public interface EmailSenderService {
 
-    // Method to send an email.
+    void sendEmail(String name, String fromAddress, String text, MessageType messageType) throws Exception;
+
     void sendEmail(
-            String name,         // Sender's name
-            String fromAddress,  // Sender's email address
-            String toAddress,    // Recipient's email address
-            String body          // Email body or content
-    ) throws Exception;        // Exception can be thrown if there's an issue with sending the email.
+            String name,
+            String fromAddress,
+            String text
+    ) throws Exception;
+
+
+    void sendNoRespectMessage(
+            String name,
+            String fromAddress,
+            String body) throws Exception;
 }
