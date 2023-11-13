@@ -51,6 +51,7 @@ public class SecurityConfig {
                     auth.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/contact")).permitAll();
                    // auth.requestMatchers("/contact").permitAll();
+                    auth.requestMatchers(new AntPathRequestMatcher("/coordinates/**")).permitAll();
                     auth.anyRequest().authenticated();
                 })
                 .oauth2ResourceServer((oauth2) -> oauth2.jwt(Customizer.withDefaults()))
