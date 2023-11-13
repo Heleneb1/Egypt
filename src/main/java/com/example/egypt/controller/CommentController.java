@@ -146,7 +146,7 @@ public class CommentController {
         newComment.setId(null);
         newComment.setArticle(article);
         newComment.setAuthor(author);
-        //TODO ou passer à true
+
         newComment.setArchive(newComment.getArchive());
         newComment.setCreationDate(LocalDateTime.now());
         newComment.setContent(newComment.getContent());
