@@ -14,13 +14,14 @@ public class Coordinate {
     private String latitude;
     @Column(nullable = false, name = "longitude")
     private String longitude;
-    @Column(nullable = false, name = "monumentName")
-    private String monumentName;
+    @Column(nullable = false, name = "monument_name")
+    private String monument_name;
     @Column(nullable = false, name = "link",length = 1000)
     private String link;
-    @Column(nullable = true, name = "picture")
+    @Column(nullable = true, name = "picture",length = 1000)
     private String picture;
-
+@Column(nullable = false, name="auhor_picture")
+private String author_picture;
     public Coordinate() {
     }
 
@@ -33,11 +34,11 @@ public class Coordinate {
     }
 
     public String getMonumentName() {
-        return monumentName;
+        return monument_name;
     }
 
     public void setMonumentName(String monumentName) {
-        this.monumentName = monumentName;
+        this.monument_name = monumentName;
     }
 
     public String getLatitude() {
@@ -70,6 +71,14 @@ public class Coordinate {
 
     public void setPicture(String picture) {
         this.picture = picture;
+    }
+
+    public String getAuthor_picture() {
+        return author_picture;
+    }
+
+    public void setAuthor_picture(String author_picture) {
+        this.author_picture = author_picture;
     }
 }
 

@@ -30,11 +30,7 @@ public class CoordinateController {
     public ResponseEntity<Coordinate> getById(@PathVariable UUID id) {
         Optional<Coordinate> coordinateOptional = coordinateRepository.findById(id);
 
-        if (coordinateOptional.isPresent()) {
-            return ResponseEntity.ok(coordinateOptional.get());
-        } else {
-            return ResponseEntity.notFound().build();
-        }
+        return coordinateOptional.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/create")
