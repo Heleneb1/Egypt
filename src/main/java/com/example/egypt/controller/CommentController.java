@@ -2,18 +2,19 @@ package com.example.egypt.controller;
 
 import com.example.egypt.DTO.CommentDTO;
 import com.example.egypt.DTOMapper.CommentDTOMapper;
-import com.example.egypt.entity.*;
-
+import com.example.egypt.entity.Article;
+import com.example.egypt.entity.Comment;
+import com.example.egypt.entity.Quiz;
+import com.example.egypt.entity.User;
 import com.example.egypt.repository.ArticleRepository;
 import com.example.egypt.repository.CommentRepository;
-
 import com.example.egypt.repository.QuizRepository;
 import com.example.egypt.repository.UserRepository;
 import com.example.egypt.services.BeanUtils;
 import com.example.egypt.services.CommentService;
+import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -114,6 +115,67 @@ public class CommentController {
         return this.commentRepository.save(commentUpdated);
     }
 
+    @PutMapping("/{id}/archive")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Comment updateAndArchive(@PathVariable UUID id, @RequestBody Comment commentArchived) {
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Comment Not Found: " + id));
+
+        // Save the existing author and article properties
+        User existingAuthor = comment.getAuthor();
+        Article existingArticle = comment.getArticle();
+
+        // Copy non-null properties from commentArchived to comment
+        BeanUtils.copyNonNullProperties(comment, commentArchived);
+
+        // Set the ID to match the path variable
+        comment.setId(id);
+
+        // Restore the existing author and article properties
+        comment.setAuthor(existingAuthor);
+        comment.setArticle(existingArticle);
+
+        // Toggle the archive status
+        comment.setArchive(!commentArchived.getArchive());
+
+        // Save the updated comment
+        return this.commentRepository.save(comment);
+    }
+
+
+    @PutMapping("/{id}/{author}/{articleId}/update")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public ResponseEntity<CommentDTO> update(@PathVariable UUID id,
+                                             @PathVariable UUID author,
+                                             @PathVariable UUID articleId,
+                                             @RequestBody CommentDTO commentDTO) {
+
+        Comment commentUpdated = commentRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User Not Found: " + id));
+
+        User user = userRepository
+                .findById(author)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "User Not Found: " + author));
+
+        Article article = articleRepository
+                .findById(articleId)
+                .orElseThrow(() -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
+
+        BeanUtils.copyNonNullProperties(commentDTO, commentUpdated);
+//        commentUpdated.setArticle(article);  // Mettez à jour l'Article pour le commentaire
+        commentUpdated.setArchive(commentDTO.archive());
+        commentUpdated.getAuthor();
+        commentUpdated.getArticle();
+        Comment saveComment = commentRepository.save(commentUpdated);
+        CommentDTO updatedCommentDTO = commentDTOMapper.convertToDTO(saveComment);
+        return ResponseEntity.ok(updatedCommentDTO);
+    }
+
+
     @PutMapping("/{id}/{authorId}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public Comment update(@PathVariable UUID id,
@@ -158,63 +220,6 @@ public class CommentController {
         return ResponseEntity.ok(updatedArticle);
     }
 
-    // @PutMapping("{authorId}/articles/{articleId}/add-comment")
-    // public ResponseEntity<CommentDTO> addCommentToArticle(
-    // @PathVariable UUID articleId,
-    // @RequestBody CommentDTO newCommentDTO,
-    // @PathVariable UUID authorId) {
-
-    // Article article = articleRepository.findById(articleId).orElseThrow(
-    // () -> new ResponseStatusException(
-    // HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
-
-    // User author = userRepository.findById(authorId).orElseThrow(
-    // () -> new ResponseStatusException(
-    // HttpStatus.NOT_FOUND, "Author Not Found: " + authorId));
-
-    // Comment newComment = new Comment();
-    // BeanUtils.copyNonNullProperties(newCommentDTO, newComment);
-    // newComment.setId(null);
-    // newComment.setArticle(article);
-    // newComment.setAuthor(author);
-    // newComment.setArchive(false);
-    // newComment.setCreationDate(LocalDateTime.now());
-
-    // article.getComments().add(newComment);
-
-    // article = articleRepository.save(article);
-
-    // CommentDTO addedCommentDTO = commentDTOMapper.convertToDTO(newComment);
-
-    // return ResponseEntity.ok(addedCommentDTO);
-    // }
-    // @PutMapping("{authorId}/articles/{articleId}/add-comment")
-    // public ResponseEntity<Article> addCommentToArticle(
-    // @PathVariable UUID articleId,
-    // @RequestBody Comment newComment,
-    // @PathVariable UUID authorId) {
-
-    // Article article = articleRepository.findById(articleId).orElseThrow(
-    // () -> new ResponseStatusException(
-    // HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
-
-    // User author = userRepository.findById(authorId).orElseThrow(
-    // () -> new ResponseStatusException(
-    // HttpStatus.NOT_FOUND, "Author Not Found: " + authorId));
-
-    // newComment.setId(null);
-    // newComment.setArticle(article);
-    // newComment.setAuthor(author);
-    // newComment.setArchive(false);
-    // newComment.setCreationDate(LocalDateTime.now());
-    // newComment.setContent(newComment.getContent());
-
-    // article.getComments().add(newComment);
-
-    // Article updatedArticle = articleRepository.save(article);
-
-    // return ResponseEntity.ok(updatedArticle);
-    // }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)

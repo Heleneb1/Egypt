@@ -18,7 +18,7 @@ import java.util.UUID;
 // cette ligne sur user
 @Entity
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "@id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class,property = "id")
 
 @Table(name = "article")
 public class Article {
@@ -59,7 +59,7 @@ public class Article {
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
     private Boolean archive = false;
     @Column(name = "comment")
-    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
     // @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
     // @JsonIgnore // Exclure la sérialisation des commentaires
