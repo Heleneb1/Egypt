@@ -3,20 +3,27 @@ package com.example.egypt.controller;
 import com.example.egypt.entity.Comment;
 import com.example.egypt.entity.Contact;
 import com.example.egypt.entity.User;
+import com.example.egypt.repository.ContactRepository;
 import com.example.egypt.services.EmailSenderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/contact")
 public class ContactController {
+    private ContactRepository contactRepository;
+    ContactController(ContactRepository contactRepository){
+        this.contactRepository=contactRepository;
+    }
 
     @Autowired
     private EmailSenderService emailSenderService;
@@ -26,6 +33,13 @@ public class ContactController {
         modelMap.put("contact", new Contact());
         return "Succès, Message envoyé!";
     }
+    @GetMapping("/see-message")
+    public List<Contact>getAll(){
+        return this.contactRepository.findAll();
+    }
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    void delete(@PathVariable Long id) { this.contactRepository.deleteById(id);}
 
     @PostMapping("/send")
     public ResponseEntity<String> send(@RequestBody Contact contact) {
@@ -37,12 +51,13 @@ public class ContactController {
                     + "Adresse: " + contact.getEmail() + "\n"
                     + "Message: " + contact.getContent();
 
-            emailSenderService.sendEmail(contact.getUsername(), contact.getEmail(), contact.getContent());
+            // Enregistrez le contact en base de données
+            contactRepository.save(contact);
 
+            emailSenderService.sendEmail(contact.getUsername(), contact.getEmail(), contact.getContent());
 
             return ResponseEntity.ok("Message envoyé avec succès !");
         } catch (Exception exception) {
-
             return ResponseEntity.status(500).body("Erreur lors de l'envoi du message : " + exception.getMessage());
         }
     }
@@ -81,6 +96,5 @@ public class ContactController {
     }
 
 }
-
 
 

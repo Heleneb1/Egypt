@@ -232,5 +232,32 @@ public class CommentController {
                                 HttpStatus.NOT_FOUND, "Not Found" + authorId));
         this.commentRepository.deleteById(id);
     }
+    @PutMapping("/{id}/archive")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Comment updateAndArchive(@PathVariable UUID id, @RequestBody Comment commentArchived) {
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Comment Not Found: " + id));
+
+        // Save the existing author and article properties
+        User existingAuthor = comment.getAuthor();
+        Article existingArticle = comment.getArticle();
+
+        // Copy non-null properties from commentArchived to comment
+        BeanUtils.copyNonNullProperties(comment, commentArchived);
+
+        // Set the ID to match the path variable
+        comment.setId(id);
+
+        // Restore the existing author and article properties
+        comment.setAuthor(existingAuthor);
+        comment.setArticle(existingArticle);
+
+        // Toggle the archive status
+        comment.setArchive(!commentArchived.getArchive());
+
+        // Save the updated comment
+        return this.commentRepository.save(comment);
+    }
 
 }
