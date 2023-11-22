@@ -94,6 +94,8 @@ public class ContactController {
             return ResponseEntity.status(500).body("Erreur lors de l'envoi de la notification : " + exception.getMessage());
         }
     }
+    // TODO: 18/11/2023  ctrl + j propose implementation
+
 
 }
 
