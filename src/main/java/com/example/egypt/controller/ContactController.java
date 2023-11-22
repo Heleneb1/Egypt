@@ -21,8 +21,9 @@ import java.util.UUID;
 @RequestMapping("/contact")
 public class ContactController {
     private ContactRepository contactRepository;
-    ContactController(ContactRepository contactRepository){
-        this.contactRepository=contactRepository;
+
+    ContactController(ContactRepository contactRepository) {
+        this.contactRepository = contactRepository;
     }
 
     @Autowired
@@ -33,34 +34,39 @@ public class ContactController {
         modelMap.put("contact", new Contact());
         return "Succès, Message envoyé!";
     }
+
     @GetMapping("/see-message")
-    public List<Contact>getAll(){
+    public List<Contact> getAll() {
         return this.contactRepository.findAll();
     }
+
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.ACCEPTED)
-    void delete(@PathVariable Long id) { this.contactRepository.deleteById(id);}
-
-@PostMapping("/send")
-public ResponseEntity<String> send(@RequestBody Contact contact) {
-    Dotenv dotenv = Dotenv.load();
-    String adminEmail = dotenv.get("ADMIN_EMAIL");
-
-    try {
-        String content = "Nom: " + contact.getUsername() + "\n"
-                + "Adresse: " + contact.getEmail() + "\n"
-                + "Message: " + contact.getContent();
-
-        // Enregistrez le contact en base de données
-        contactRepository.save(contact);
-
-        emailSenderService.sendEmail(contact.getUsername(), contact.getEmail(), contact.getContent());
-
-        return ResponseEntity.ok("Message envoyé avec succès !");
-    } catch (Exception exception) {
-        return ResponseEntity.status(500).body("Erreur lors de l'envoi du message : " + exception.getMessage());
+    void delete(@PathVariable Long id) {
+        this.contactRepository.deleteById(id);
     }
-}
+
+    @PostMapping("/send")
+    public ResponseEntity<String> send(@RequestBody Contact contact) {
+        Dotenv dotenv = Dotenv.load();
+        String adminEmail = dotenv.get("ADMIN_EMAIL");
+
+        try {
+            String content = "Nom: " + contact.getUsername() + "\n"
+                    + "Adresse: " + contact.getEmail() + "\n"
+                    + "Message: " + contact.getContent();
+
+            // Enregistrez le contact en base de données
+            contactRepository.save(contact);
+
+            emailSenderService.sendEmail(contact.getUsername(), contact.getEmail(), contact.getContent());
+
+            return ResponseEntity.ok("Message envoyé avec succès !");
+        } catch (Exception exception) {
+            return ResponseEntity.status(500).body("Erreur lors de l'envoi du message : " + exception.getMessage());
+        }
+    }
+
     @PostMapping("/send-after-comment")
     public ResponseEntity<String> sendAfterComment(@RequestBody Map<String, Object> requestBody) {
         try {
@@ -73,7 +79,7 @@ public ResponseEntity<String> send(@RequestBody Contact contact) {
             String adminEmail = dotenv.get("ADMIN_EMAIL");
 
             if (author != null) {
-                //  accéder aux propriétés de l'auteur :
+                // accéder aux propriétés de l'auteur :
                 String authorName = author.getFirstname() + " " + author.getLastname();
                 System.out.println(authorName);
                 String authorEmail = author.getEmail();
@@ -82,7 +88,7 @@ public ResponseEntity<String> send(@RequestBody Contact contact) {
                 String content = "Nom de l'auteur: " + authorName + "\n"
                         + "Adresse e-mail de l'auteur: " + authorEmail + "\n";
 
-                //  méthode  pour envoyer l'e-mail
+                // méthode pour envoyer l'e-mail
                 emailSenderService.sendNoRespectMessage(authorName, authorEmail, content);
 
                 return ResponseEntity.status(200).body("Notification envoyée avec succès à l'auteur du commentaire !");
@@ -91,11 +97,10 @@ public ResponseEntity<String> send(@RequestBody Contact contact) {
                 return ResponseEntity.status(400).body("Aucun auteur trouvé dans la requête.");
             }
         } catch (Exception exception) {
-            return ResponseEntity.status(500).body("Erreur lors de l'envoi de la notification : " + exception.getMessage());
+            return ResponseEntity.status(500)
+                    .body("Erreur lors de l'envoi de la notification : " + exception.getMessage());
         }
     }
+    // TODO: 18/11/2023 ctrl + j propose implementation
 
 }
-
-
-
