@@ -48,6 +48,9 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
+    @Column(nullable = false, name = "isAccepted", columnDefinition = "TINYINT DEFAULT 0")
+    private Boolean isAccepted = false;
+
     @OneToMany(mappedBy = "author")
     private List<Quiz> quizzes = new ArrayList<>();
 
@@ -76,6 +79,7 @@ public class User implements UserDetails {
         this.quizzes = quizzes;
         this.badges = badges;
         this.authoredTopics = authoredTopics;
+       // this.isAccepted= false;
 //        this.receivedTopics = receivedTopics;
 
     }
@@ -210,6 +214,13 @@ public class User implements UserDetails {
         this.authoredTopics = authoredTopics;
     }
 
+    public Boolean getAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        isAccepted = accepted;
+    }
 //    public Set<Topic> getReceivedTopics() {
 //        return receivedTopics;
 //    }

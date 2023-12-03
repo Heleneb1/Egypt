@@ -26,7 +26,7 @@ public class Answer {
 
     private Topic topic;
 
-    @Column(nullable = false, name = "answer")
+    @Column(nullable = false,length = 1000, name = "answer")
 
     @Size(min = 1, max = 1000)
     private String answer;

@@ -30,10 +30,11 @@ public class Topic {
 //    private User receiver;
 @Column(nullable = true, name="tag")
 private String tag;
-    @Column(nullable = false, name = "message")
+    @Column(nullable = false,length = 1000,name = "message")
 
     @Size(min = 1, max = 1000)
     private String message;
+
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private List<Answer> answers;
 
