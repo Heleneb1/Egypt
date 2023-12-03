@@ -85,7 +85,7 @@ public class Comment {
     }
 
     public User getAuthor() {
-        System.out.println("Auteur"+author);
+
         return author;
     }
 
@@ -101,7 +101,9 @@ public class Comment {
         this.quiz = quiz;
     }
 
-    public Article getArticle() {
+    public Article getArticle()  {
+             System.out.println("Article"+article);
+
         return article;
     }
 

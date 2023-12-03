@@ -49,12 +49,19 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public User register(@Valid @RequestBody User user, HttpServletRequest request) {
-        if (checkCookieToken(request)) {
+        if (checkCookieToken(request) ) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
         }
 
         user.setRole(Role.USER);
+        user.setAccepted(user.getAccepted());
+        user.setAccepted(user.getAccepted());
+        System.out.println(user.getAccepted());
 
+
+        if (!user.getAccepted()){
+    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"You must accept the GCU");
+}
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 

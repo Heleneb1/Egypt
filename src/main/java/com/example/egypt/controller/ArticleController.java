@@ -201,55 +201,6 @@ public class ArticleController {
         return ResponseEntity.ok(updatedArticle);
     }
 
-    // @PostMapping("/{id}/add-comments")
-    // public ResponseEntity<ArticleDTO> addCommentToArticle(
-    // @PathVariable UUID id,
-    // @RequestBody Comment newComment, @RequestBody @Validated ArticleDTO
-    // articleDTO) {
-
-    // Article article = articleRepository.findById(id).orElseThrow(
-    // () -> new ResponseStatusException(
-    // HttpStatus.NOT_FOUND, "Article Not Found: " + id));
-
-    // newComment.setArticle(article);
-
-    // article.getComments().add(newComment);
-
-    // BeanUtils.copyNonNullProperties(articleDTO, article);
-    // Article savedArticle = articleRepository.save(article);
-    // ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(savedArticle);
-
-    // return ResponseEntity.ok(updatedArticleDTO);
-    // }
-    // @PutMapping("/{articleId}/author/{authorId}/add-comment")
-    // public ResponseEntity<ArticleDTO> addComment(
-    // @PathVariable UUID articleId,
-    // @PathVariable UUID authorId,
-    // @RequestBody CommentDTO newCommentDTO) {
-
-    // Article article = articleRepository.findById(articleId)
-    // .orElseThrow(() -> new ResponseStatusException(
-    // HttpStatus.NOT_FOUND, "Article Not Found: " + articleId));
-
-    // User author = userRepository.findById(authorId)
-    // .orElseThrow(() -> new ResponseStatusException(
-    // HttpStatus.NOT_FOUND, "Author Not Found: " + authorId));
-
-    // // Créez un nouvel objet Comment à partir de CommentDTO
-    // Comment newComment = new Comment();
-    // BeanUtils.copyNonNullProperties(newComment, article);
-
-    // // Ajoutez le commentaire à la liste des commentaires de l'article
-    // article.getComments().add(newComment);
-
-    // // Enregistrez l'article mis à jour dans la base de données
-    // article = articleRepository.save(article);
-
-    // // Convertissez l'article mis à jour en DTO pour la réponse
-    // ArticleDTO updatedArticleDTO = articleDTOMapper.convertToDTO(article);
-
-    // return ResponseEntity.ok(updatedArticleDTO);
-    // }
 
     @PutMapping("/{id}/add-rating")
     public ResponseEntity<Article> addRating(

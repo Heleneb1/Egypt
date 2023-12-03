@@ -40,7 +40,7 @@ public class User implements UserDetails {
     @Column(name = "email", unique = true, nullable = false)
     private String email;
 
-    @Size(min = 8, message = "Le mot de passe doit contenir au moins 8 caractères")
+    @Size(min = 12, message = "Le mot de passe doit contenir au moins 12 caractères")
     @Column(name = "password", nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
@@ -48,18 +48,25 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author", cascade = CascadeType.REMOVE)
     private List<Comment> comments;
 
+    @Column(nullable = false, name = "isAccepted", columnDefinition = "TINYINT DEFAULT 0")
+    private Boolean isAccepted = false;
+
     @OneToMany(mappedBy = "author")
     private List<Quiz> quizzes = new ArrayList<>();
 
     @ManyToMany
     @JoinTable(name = "user_badge", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "badge_id"))
     private Set<Badge> badges = new HashSet<>();
+    @OneToMany(mappedBy = "author")
+    private Set<Topic> authoredTopics;
 
+//    @OneToMany(mappedBy = "receiver")
+//    private Set<Topic> receivedTopics;
     public User() {
     }
 
     public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email,
-                String password, List<Comment> comments, List<Quiz> quizzes, Set<Badge> badges) {
+                String password, List<Comment> comments, List<Quiz> quizzes, Set<Badge> badges,Set<Topic> authoredTopics,Set<Topic> receivedTopics) {
         this.id = id;
         this.avatar = avatar;
         this.biography = biography;
@@ -71,6 +78,10 @@ public class User implements UserDetails {
         this.comments = comments;
         this.quizzes = quizzes;
         this.badges = badges;
+        this.authoredTopics = authoredTopics;
+       // this.isAccepted= false;
+//        this.receivedTopics = receivedTopics;
+
     }
 
     public <E> User(String email, String password, Set<E> user) {
@@ -194,4 +205,27 @@ public class User implements UserDetails {
     public void setBadges(Set<Badge> badges) {
         this.badges = badges;
     }
+
+    public Set<Topic> getAuthoredTopics() {
+        return authoredTopics;
+    }
+
+    public void setAuthoredTopics(Set<Topic> authoredTopics) {
+        this.authoredTopics = authoredTopics;
+    }
+
+    public Boolean getAccepted() {
+        return isAccepted;
+    }
+
+    public void setAccepted(Boolean accepted) {
+        isAccepted = accepted;
+    }
+//    public Set<Topic> getReceivedTopics() {
+//        return receivedTopics;
+//    }
+//
+//    public void setReceivedTopics(Set<Topic> receivedTopics) {
+//        this.receivedTopics = receivedTopics;
+//    }
 }

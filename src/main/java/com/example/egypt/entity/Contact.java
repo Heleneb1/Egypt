@@ -15,7 +15,10 @@ public class Contact {
 
     private String username;
     private String email;
+    @Lob
+    @Column(length = 10000) // Set an appropriate length based on your requirements
     private String content;
+
 
     public Long getId() {
         return id;

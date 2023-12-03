@@ -46,6 +46,8 @@ public class SecurityConfig {
                     auth.requestMatchers(new AntPathRequestMatcher("/api/auth/*")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/articles/**")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/users/**")).authenticated();
+                    auth.requestMatchers(new AntPathRequestMatcher("/topics/**")).authenticated();
+                    auth.requestMatchers(new AntPathRequestMatcher("/answers/**")).authenticated();
                     auth.requestMatchers(new AntPathRequestMatcher("/users/avatar/user/{userId}")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/contact/**")).permitAll();
