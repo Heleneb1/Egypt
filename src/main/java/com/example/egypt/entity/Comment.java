@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "comment")
 public class Comment {
     @Id
@@ -34,7 +34,6 @@ public class Comment {
     private Quiz quiz;
 
     @ManyToOne
-
     @JoinColumn(name = "article_id")
     private Article article;
 
