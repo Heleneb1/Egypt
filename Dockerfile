@@ -3,6 +3,7 @@
 FROM openjdk:17-jdk-slim
 WORKDIR /build/
 COPY . .
+RUN chmod +x mvnw
 RUN ./mvnw -Dmaven.test.skip clean package
 
 ENV PORT 8080
