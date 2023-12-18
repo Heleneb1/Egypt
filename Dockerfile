@@ -20,7 +20,12 @@ ARG FRONTEND_URL=${FRONTEND_URL}
 ENV FRONTEND_URL=${FRONTEND_URL}
 
 # production environment
-COPY target/*.jar /app/webapp.jar
-WORKDIR /app
+# COPY target/*.jar /app/webapp.jar
+# WORKDIR /app
+# EXPOSE 8080
+# ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","webapp.jar"]
+
+COPY target/*.jar /build/webapp.jar
+WORKDIR /build
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","webapp.jar"]
