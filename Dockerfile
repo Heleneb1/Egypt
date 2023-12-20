@@ -29,3 +29,4 @@ COPY target/*.jar /build/webapp.jar
 WORKDIR /build
 EXPOSE 8080
 ENTRYPOINT ["java","-jar","-Dspring.profiles.active=prod","webapp.jar"]
+
