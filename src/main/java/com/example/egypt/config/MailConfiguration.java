@@ -1,6 +1,6 @@
 package com.example.egypt.config;
 
-import io.github.cdimascio.dotenv.Dotenv;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -8,19 +8,23 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @Configuration
 public class MailConfiguration {
+
+    @Value("${ADMIN_EMAIL}")
+    private String adminEmail;
+
+    @Value("${PASSWORD}")
+    private String password;
 
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost("smtp.gmail.com");
         mailSender.setPort(587);
-        Dotenv dotenv = Dotenv.load();
-
-        String username = dotenv.get("ADMIN_EMAIL");
-        String password = dotenv.get("PASSWORD");
-        mailSender.setUsername(username);
+        mailSender.setUsername(adminEmail);
         mailSender.setPassword(password);
 
         Properties props = mailSender.getJavaMailProperties();
