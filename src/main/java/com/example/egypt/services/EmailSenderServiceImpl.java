@@ -3,6 +3,7 @@ package com.example.egypt.services;
 import com.example.egypt.entity.MessageType;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,9 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     private final String adminEmail;
 
     @Autowired
-    public EmailSenderServiceImpl(JavaMailSender emailSender) {
+    public EmailSenderServiceImpl(JavaMailSender emailSender, @Value("${ADMIN_EMAIL}") String adminEmail) {
         this.emailSender = emailSender;
-        Dotenv dotenv = Dotenv.load(); // Charge le fichier .env
-        adminEmail = dotenv.get("ADMIN_EMAIL"); // Initialise adminEmail avec la valeur de ADMIN_EMAIL du fichier .env
-
+        this.adminEmail = adminEmail;
     }
 
     @Override
