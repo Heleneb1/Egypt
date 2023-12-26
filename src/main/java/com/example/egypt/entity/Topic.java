@@ -24,10 +24,7 @@ public class Topic {
 
     private User author;
 
-//    @ManyToOne
-//    @JoinColumn(name = "receiver_id", nullable = false)
-//
-//    private User receiver;
+
 @Column(nullable = true, name="tag")
 private String tag;
     @Column(nullable = false,length = 1000,name = "message")
@@ -46,7 +43,6 @@ private String tag;
         this.id = id;
         this.creationDate = creationDate;
         this.author = author;
-//        this.receiver = receiver;
         this.tag= tag;
         this.message = message;
         this.answers = answers;
