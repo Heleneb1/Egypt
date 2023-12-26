@@ -6,8 +6,9 @@ import com.example.egypt.entity.User;
 import com.example.egypt.repository.ContactRepository;
 import com.example.egypt.services.EmailSenderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.github.cdimascio.dotenv.Dotenv;
+// import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.ModelMap;
@@ -76,10 +77,7 @@ public class ContactController {
     }
 
     @PostMapping("/send")
-    public ResponseEntity<String> send(@RequestBody Contact contact) {
-        Dotenv dotenv = Dotenv.load();
-        String adminEmail = dotenv.get("ADMIN_EMAIL");
-
+    public ResponseEntity<String> send(@RequestBody Contact contact, @Value("${ADMIN_EMAIL}") final String adminEmail) {
         try {
             String content = "Nom: " + contact.getUsername() + "\n"
                     + "Adresse: " + contact.getEmail() + "\n"
@@ -97,15 +95,13 @@ public class ContactController {
     }
 
     @PostMapping("/send-after-comment")
-    public ResponseEntity<String> sendAfterComment(@RequestBody Map<String, Object> requestBody) {
+    public ResponseEntity<String> sendAfterComment(@RequestBody Map<String, Object> requestBody,
+            @Value("${ADMIN_EMAIL}") final String adminEmail) {
         try {
             Comment comment = new ObjectMapper().convertValue(requestBody.get("comment"), Comment.class);
             User author = new ObjectMapper().convertValue(requestBody.get("author"), User.class);
 
             System.out.println("author:" + author);
-
-            Dotenv dotenv = Dotenv.load();
-            String adminEmail = dotenv.get("ADMIN_EMAIL");
 
             if (author != null) {
                 // accéder aux propriétés de l'auteur :
