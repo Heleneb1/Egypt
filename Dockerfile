@@ -1,6 +1,6 @@
 # Dockerfile Spring
 # build environment
-FROM openjdk:17-jdk-slim
+FROM openjdk:22-jdk-slim
 WORKDIR /build/
 COPY . .
 RUN chmod +x mvnw
