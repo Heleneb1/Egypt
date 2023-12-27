@@ -60,13 +60,12 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "author")
     private Set<Topic> authoredTopics;
 
-//    @OneToMany(mappedBy = "receiver")
-//    private Set<Topic> receivedTopics;
     public User() {
     }
 
     public User(UUID id, String avatar, String biography, String lastname, String firstname, Role role, String email,
-                String password, List<Comment> comments, List<Quiz> quizzes, Set<Badge> badges,Set<Topic> authoredTopics,Set<Topic> receivedTopics) {
+            String password, List<Comment> comments, List<Quiz> quizzes, Set<Badge> badges, Set<Topic> authoredTopics,
+            Set<Topic> receivedTopics) {
         this.id = id;
         this.avatar = avatar;
         this.biography = biography;
@@ -79,9 +78,6 @@ public class User implements UserDetails {
         this.quizzes = quizzes;
         this.badges = badges;
         this.authoredTopics = authoredTopics;
-       // this.isAccepted= false;
-//        this.receivedTopics = receivedTopics;
-
     }
 
     public <E> User(String email, String password, Set<E> user) {
@@ -221,11 +217,4 @@ public class User implements UserDetails {
     public void setAccepted(Boolean accepted) {
         isAccepted = accepted;
     }
-//    public Set<Topic> getReceivedTopics() {
-//        return receivedTopics;
-//    }
-//
-//    public void setReceivedTopics(Set<Topic> receivedTopics) {
-//        this.receivedTopics = receivedTopics;
-//    }
 }
