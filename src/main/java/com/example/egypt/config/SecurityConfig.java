@@ -28,7 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-    @Value("${jwt.secret")
+    @Value("${jwt.secret}")
     public String jwtSecret;
 
     // enables AuthenticationManager injection in controller
