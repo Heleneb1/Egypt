@@ -6,7 +6,6 @@ import com.example.egypt.entity.User;
 import com.example.egypt.repository.ContactRepository;
 import com.example.egypt.services.EmailSenderService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-// import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -39,35 +38,6 @@ public class ContactController {
     @GetMapping("/see-message")
     public List<Contact> getAll() {
         return this.contactRepository.findAll();
-        // <<<<<<< HEAD
-        // =======
-        // }
-        // @DeleteMapping("/{id}")
-        // @ResponseStatus(HttpStatus.ACCEPTED)
-        // void delete(@PathVariable Long id) { this.contactRepository.deleteById(id);}
-
-        // @PostMapping("/send")
-        // public ResponseEntity<String> send(@RequestBody Contact contact) {
-        // Dotenv dotenv = Dotenv.load();
-        // String adminEmail = dotenv.get("ADMIN_EMAIL");
-
-        // try {
-        // String content = "Nom: " + contact.getUsername() + "\n"
-        // + "Adresse: " + contact.getEmail() + "\n"
-        // + "Message: " + contact.getContent();
-
-        // // Enregistrez le contact en base de données
-        // contactRepository.save(contact);
-
-        // emailSenderService.sendEmail(contact.getUsername(), contact.getEmail(),
-        // contact.getContent());
-
-        // return ResponseEntity.ok("Message envoyé avec succès !");
-        // } catch (Exception exception) {
-        // return ResponseEntity.status(500).body("Erreur lors de l'envoi du message : "
-        // + exception.getMessage());
-        // }
-        // >>>>>>> main
     }
 
     @DeleteMapping("/{id}")
