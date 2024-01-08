@@ -18,6 +18,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:4200", "https://app.lesmysteresdelegypteantique.fr")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
+                .exposedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
                 .allowCredentials(true);
 
     }
