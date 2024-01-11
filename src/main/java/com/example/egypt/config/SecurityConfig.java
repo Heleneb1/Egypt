@@ -20,9 +20,13 @@ import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.servlet.util.matcher.MvcRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
+import java.util.Arrays;
 
 @Configuration
 @EnableMethodSecurity
@@ -70,5 +74,18 @@ public class SecurityConfig {
     public JwtDecoder jwtDecoder() {
         SecretKey originalKey = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
         return NimbusJwtDecoder.withSecretKey(originalKey).build();
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:4200", "https://app.lesmysteresdelegypteantique.fr"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "HEAD", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization"));
+        configuration.setExposedHeaders(Arrays.asList("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
