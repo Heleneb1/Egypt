@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "https://app.lesmysteresdelegypteantique.fr/", maxAge = 3600)
+@CrossOrigin(origins = "https://app.lesmysteresdelegypteantique.fr/", methods = RequestMethod.GET)
 
 @RequestMapping("/articles")
 public class ArticleController {
