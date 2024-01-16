@@ -123,15 +123,7 @@ public class ArticleController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createArticle);
     }
 
-    // @PostMapping
-    // public ResponseEntity<User> createUser(@RequestBody @Validated User user) {
-    // User createdUser = userRepository.save(user);
-    // return ResponseEntity.status(HttpStatus.CREATED).body(createdUser);
-    // }
-    // @PutMapping("/{id}")
-    // public Article update(@RequestBody Article articleUpdated) {
-    // return this.articleRepository.save(articleUpdated);
-    // }
+
     @PutMapping("/{id}")
     public ResponseEntity<ArticleDTO> updateArticle(
             @PathVariable UUID id, @RequestBody ArticleDTO articleDTO) {
