@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "https://app.lesmysteresdelegypteantique.fr/", methods = RequestMethod.GET)
+@CrossOrigin(origins = "*", allowedHeaders = "*")
 
 @RequestMapping("/articles")
 public class ArticleController {
