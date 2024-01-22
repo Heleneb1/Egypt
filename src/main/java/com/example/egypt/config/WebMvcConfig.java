@@ -16,12 +16,10 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-
-                .allowedOrigins("https://app.lesmysteresdelegypteantique.fr","http://localhost:4200")
+                .allowedOrigins("https://app.lesmysteresdelegypteantique.fr", "http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
                 .exposedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
-                .allowCredentials(true);
-
+                .allowCredentials(false);
     }
 }

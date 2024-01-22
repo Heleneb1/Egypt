@@ -63,7 +63,20 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .build();
     }
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://app.lesmysteresdelegypteantique.fr", "http://localhost:4200"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"));
+        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization"));
+        configuration.setExposedHeaders(Arrays.asList("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization"));
+        configuration.setAllowCredentials(true);
 
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
+    }
     @Bean
     public JwtEncoder jwtEncoder() {
         SecretKey key = new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
@@ -77,17 +90,5 @@ public class SecurityConfig {
         return NimbusJwtDecoder.withSecretKey(originalKey).build();
     }
 
-    @Bean
 
-    CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://app.lesmysteresdelegypteantique.fr","http://localhost:4200"));
-        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE", "HEAD", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization"));
-        configuration.setExposedHeaders(Arrays.asList("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization"));
-        configuration.setAllowCredentials(true);
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
 }
