@@ -46,7 +46,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         return http.csrf(AbstractHttpConfigurer::disable)
-                .cors(Customizer.withDefaults())
+                .cors(cors -> cors.configurationSource(corsConfigurationSource())) // Configurer CORS ici
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(new AntPathRequestMatcher("/api/auth/*")).permitAll();
                     auth.requestMatchers(new AntPathRequestMatcher("/articles/**")).permitAll();
@@ -68,13 +68,12 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList("https://app.lesmysteresdelegypteantique.fr", "http://localhost:4200"));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization"));
-        configuration.setExposedHeaders(Arrays.asList("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+        configuration.setExposedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
-
         return source;
     }
     @Bean
