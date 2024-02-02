@@ -81,11 +81,11 @@ public class AuthController {
         }
         Cookie cookie = new Cookie("token", jwt);
         cookie.setSecure(true);
-        cookie.setHttpOnly(true);
-
+        cookie.setHttpOnly(false);//passer à true
         cookie.getValue();
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60);
+
         response.addCookie(cookie);
         return (User) authentication.getPrincipal();
     }
