@@ -1,20 +1,20 @@
 package com.example.egypt.controller;
 
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import com.example.egypt.entity.Role;
 import com.example.egypt.entity.User;
 import com.example.egypt.repository.UserRepository;
 import com.example.egypt.services.TokenService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -49,7 +49,7 @@ public class AuthController {
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
     public User register(@Valid @RequestBody User user, HttpServletRequest request) {
-        if (checkCookieToken(request) ) {
+        if (checkCookieToken(request)) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
         }
 
@@ -59,9 +59,9 @@ public class AuthController {
         System.out.println(user.getAccepted());
 
 
-        if (!user.getAccepted()){
-    throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"You must accept the GCU");
-}
+        if (!user.getAccepted()) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must accept the GCU");
+        }
         PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
@@ -81,12 +81,12 @@ public class AuthController {
         }
         Cookie cookie = new Cookie("token", jwt);
         cookie.setSecure(true);
-        cookie.setHttpOnly(false);//passer à true
+        cookie.setHttpOnly(false);
         cookie.getValue();
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60);
-
         response.addCookie(cookie);
+        response.setHeader("Set-Cookie", String.format("%s; %s", response.getHeader("Set-Cookie"), "SameSite=None"));
         return (User) authentication.getPrincipal();
     }
 
