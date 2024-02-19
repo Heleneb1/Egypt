@@ -45,7 +45,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        boolean isLocal = true;
+        boolean isLocal = false;
         String cookieDomain = isLocal ? "localhost" : "lesmysteresdelegypteantique.fr";
 
         return http.csrf(AbstractHttpConfigurer::disable)

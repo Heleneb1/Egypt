@@ -20,6 +20,6 @@ public class WebMvcConfig implements WebMvcConfigurer {
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
                 .exposedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
-                .allowCredentials(true);
+                .allowCredentials(false);
     }
 }
