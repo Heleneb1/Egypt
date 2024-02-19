@@ -85,8 +85,10 @@ public class AuthController {
         cookie.getValue();
         cookie.setPath("/");
         cookie.setMaxAge(60 * 60);
+
         response.addCookie(cookie);
-        response.setHeader("Set-Cookie", String.format("%s; %s", response.getHeader("Set-Cookie"), "SameSite=None"));
+//        response.setHeader("Set-Cookie", String.format("%s; %s", response.getHeader("Set-Cookie"), "SameSite=None"));
+        response.setHeader("Set-Cookie", String.format("token=%s; Secure; HttpOnly; Path=/; Max-Age=3600; SameSite=None", jwt));
         return (User) authentication.getPrincipal();
     }
 
