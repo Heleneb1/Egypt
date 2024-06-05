@@ -38,7 +38,7 @@ public class AuthController {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("token")) {
+                if (cookie.getName().equals("auth_token")) {
                     return true;
                 }
             }
@@ -57,7 +57,6 @@ public class AuthController {
         user.setAccepted(user.getAccepted());
         user.setAccepted(user.getAccepted());
         System.out.println(user.getAccepted());
-
 
         if (!user.getAccepted()) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "You must accept the GCU");
@@ -79,18 +78,11 @@ public class AuthController {
         if (jwt == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
         }
-        Cookie cookie = new Cookie("token", jwt);
-        cookie.setSecure(true);
-        cookie.setHttpOnly(false);
-        cookie.getValue();
-        cookie.setPath("/");
-        cookie.setMaxAge(60 * 60);
 
-        response.addCookie(cookie);
-//        response.setHeader("Set-Cookie", String.format("%s; %s", response.getHeader("Set-Cookie"), "SameSite=None"));
-        response.setHeader("Set-Cookie", String.format("token=%s; Secure; HttpOnly; Path=/; Max-Age=3600; SameSite=None", jwt));
+        // Ajouter le token dans la réponse
+        response.setHeader("Authorization", "Bearer " + jwt);
+
         return (User) authentication.getPrincipal();
     }
 
 }
-

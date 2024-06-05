@@ -29,7 +29,6 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/articles")
 
-
 public class ArticleController {
 
     private ArticleRepository articleRepository;
@@ -82,7 +81,6 @@ public class ArticleController {
         return articles;
     }
 
-
     @GetMapping("/byTag/{tag}")
     public List<ArticleDTO> getByTag(@PathVariable String tag) {
         ArticleService articleService = new ArticleService(
@@ -122,7 +120,6 @@ public class ArticleController {
         Article createArticle = articleRepository.save(newArticle);
         return ResponseEntity.status(HttpStatus.CREATED).body(createArticle);
     }
-
 
     @PutMapping("/{id}")
     public ResponseEntity<ArticleDTO> updateArticle(
@@ -195,11 +192,10 @@ public class ArticleController {
         return ResponseEntity.ok(updatedArticle);
     }
 
-
     @PutMapping("/{id}/add-rating")
     public ResponseEntity<Article> addRating(
             @PathVariable UUID id,
-            @RequestBody Map<String, Float> payload){
+            @RequestBody Map<String, Float> payload) {
         Float newRating = payload.get("rating");
         Article article = articleRepository.findById(id)
                 .orElseThrow(
@@ -213,16 +209,12 @@ public class ArticleController {
 
         Float sumOfRatings = currentRating + newRating;
 
-
-
         Float averageRating = sumOfRatings / 2; // Nous avons seulement deux notes : l'actuelle et la nouvelle
 
         // Arrondissez la moyenne à un chiffre après la virgule
         float roundedAverage = Math.round(averageRating * 10.0f) / 10.0f;
 
-
         article.setRating(roundedAverage);
-
 
         Article updatedArticle = articleRepository.save(article);
 

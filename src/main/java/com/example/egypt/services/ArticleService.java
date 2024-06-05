@@ -20,8 +20,8 @@ public class ArticleService {
     private final QuizRepository quizRepository;
 
     public ArticleService(ArticleRepository articleRepository,
-                          ArticleDTOMapper articleDTOMapper,
-                          QuizRepository quizRepository) {
+            ArticleDTOMapper articleDTOMapper,
+            QuizRepository quizRepository) {
         this.articleRepository = articleRepository;
         this.articleDTOMapper = articleDTOMapper;
         this.quizRepository = quizRepository;
