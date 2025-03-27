@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -24,10 +23,6 @@ public class Badge {
     @OneToOne(mappedBy = "badge") // Mappé par le champ "badge" de la classe Quiz
     private Quiz quiz; // Le quiz associé à ce badge
 
-//    @ManyToMany(mappedBy = "badges")
-//
-//    private Set<User> user = new HashSet<>();
-
     public Badge() {
     }
 
@@ -36,25 +31,25 @@ public class Badge {
         this.name = name;
         this.description = description;
         this.image = image;
-//        this.quiz = quiz;
-//        this.user = user;
+        // this.quiz = quiz;
+        // this.user = user;
     }
 
-//    public Set<User> getUser() {
-//        return user;
-//    }
-//
-//    public void setUser(Set<User> user) {
-//        this.user = user;
-//    }
+    // public Set<User> getUser() {
+    // return user;
+    // }
+    //
+    // public void setUser(Set<User> user) {
+    // this.user = user;
+    // }
 
-//    public Quiz getQuiz() {
-//        return quiz;
-//    }
-//
-//    public void setQuiz(Quiz quiz) {
-//        this.quiz = quiz;
-//    }
+    // public Quiz getQuiz() {
+    // return quiz;
+    // }
+    //
+    // public void setQuiz(Quiz quiz) {
+    // this.quiz = quiz;
+    // }
 
     public UUID getId() {
         return id;

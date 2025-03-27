@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -54,7 +55,7 @@ public class AuthController {
         }
 
         user.setRole(Role.USER);
-        user.setAccepted(user.getAccepted());
+
         user.setAccepted(user.getAccepted());
         System.out.println(user.getAccepted());
 
@@ -69,20 +70,48 @@ public class AuthController {
 
     @PostMapping("/login")
     public User login(@RequestBody User user, HttpServletResponse response, HttpServletRequest request) {
+        System.out.println("Tentative de connexion pour : " + user.getEmail());
+
         if (checkCookieToken(request)) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User must logout before registering");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Already logged in.");
         }
+
         Authentication authentication = this.authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(user.getEmail(), user.getPassword()));
         var jwt = tokenService.generateToken(authentication);
         if (jwt == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
         }
+        // Ajouter le JWT dans un cookie HTTP-Only sécurisé
+        Cookie cookie = new Cookie("auth_token", jwt);
+        cookie.setHttpOnly(true); // Empêche l'accès au cookie via JavaScript
 
-        // Ajouter le token dans la réponse
+        // Activer Secure seulement en production
+        boolean isProduction = request.getServerName().equals("new-app.lesmysteresdelegypteantique.fr");
+        System.out.println("En prod " + isProduction);
+        cookie.setSecure(isProduction);
+        cookie.setPath("/"); // Le cookie est accessible sur toute l'application
+        cookie.setMaxAge(2 * 60 * 60); // Durée d'expiration du cookie (2 heures par exemple)
+        cookie.setAttribute("SameSite", "None"); // Cross-origin autorisé
+        // // Retourner l'utilisateur
+        // return (User) authentication.getPrincipal();
         response.setHeader("Authorization", "Bearer " + jwt);
-
+        response.addCookie(cookie);
+        System.out.println("Connexion réussie");
         return (User) authentication.getPrincipal();
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        Cookie cookie = new Cookie("auth_token", "");
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false); // à mettre sur true en prod
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Expire immédiatement
+        response.addCookie(cookie);
+        System.out.println("Déconnexion, suppression du cookie...");
+
+        return ResponseEntity.ok().build();
     }
 
 }

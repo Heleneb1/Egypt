@@ -3,7 +3,7 @@ package com.example.egypt.entity;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
+// import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 import java.time.LocalDateTime;
@@ -24,10 +24,9 @@ public class Topic {
 
     private User author;
 
-
-@Column(nullable = true, name="tag")
-private String tag;
-    @Column(nullable = false,length = 1000,name = "message")
+    @Column(nullable = true, name = "tag")
+    private String tag;
+    @Column(nullable = false, length = 1000, name = "message")
 
     @Size(min = 1, max = 1000)
     private String message;
@@ -35,15 +34,15 @@ private String tag;
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL)
     private List<Answer> answers;
 
-
     public Topic() {
     }
 
-    public Topic(UUID id, LocalDateTime creationDate, User author, User receiver, String message, List<Answer> answers) {
+    public Topic(UUID id, LocalDateTime creationDate, User author, User receiver, String message,
+            List<Answer> answers) {
         this.id = id;
         this.creationDate = creationDate;
         this.author = author;
-        this.tag= tag;
+        this.tag = tag;
         this.message = message;
         this.answers = answers;
     }
@@ -72,13 +71,13 @@ private String tag;
         this.author = author;
     }
 
-//    public User getReceiver() {
-//        return receiver;
-//    }
-//
-//    public void setReceiver(User receiver) {
-//        this.receiver = receiver;
-//    }
+    // public User getReceiver() {
+    // return receiver;
+    // }
+    //
+    // public void setReceiver(User receiver) {
+    // this.receiver = receiver;
+    // }
 
     public String getTag() {
         return tag;

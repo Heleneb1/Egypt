@@ -2,18 +2,21 @@ package com.example.egypt.controller;
 
 import com.example.egypt.DTO.AddCommentsDTO;
 import com.example.egypt.DTO.ArticleDTO;
-import com.example.egypt.DTO.CommentDTO;
 import com.example.egypt.DTOMapper.ArticleDTOMapper;
 import com.example.egypt.entity.Article;
 import com.example.egypt.entity.Comment;
 import com.example.egypt.entity.Quiz;
+import com.example.egypt.entity.Rating;
 import com.example.egypt.entity.User;
 import com.example.egypt.repository.ArticleRepository;
 import com.example.egypt.repository.CommentRepository;
 import com.example.egypt.repository.QuizRepository;
+import com.example.egypt.repository.RatingRepository;
 import com.example.egypt.repository.UserRepository;
 import com.example.egypt.services.ArticleService;
 import com.example.egypt.services.BeanUtils;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +24,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -34,7 +36,6 @@ public class ArticleController {
     private ArticleRepository articleRepository;
     private QuizRepository quizRepository;
     private UserRepository userRepository;
-    private CommentRepository commentRepository;
     private ArticleDTOMapper articleDTOMapper;
 
     ArticleController(ArticleRepository articleRepository,
@@ -45,7 +46,6 @@ public class ArticleController {
         this.articleRepository = articleRepository;
         this.quizRepository = quizRepository;
         this.userRepository = userRepository;
-        this.commentRepository = commentRepository;
         this.articleDTOMapper = articleDTOMapper;
     }
 
@@ -105,16 +105,25 @@ public class ArticleController {
         return articles;
     }
 
-    // @PostMapping("/create")
-    // @ResponseStatus(HttpStatus.CREATED)
-    // public Article create(@RequestBody Article newArticle) {
+    @GetMapping("slug/{slug}")
+    public ResponseEntity<Article> getArticleBySlug(@PathVariable String slug) {
+        System.out.println("Slug reçu: " + slug);
+        Article article = articleRepository.findBySlug(slug);
 
-    // LocalDateTime localDateTimeNow = LocalDateTime.now();
-    // newArticle.setEditionDate(localDateTimeNow);
-    // return this.articleRepository.save(newArticle);
-    // }
+        if (article != null) {
+            System.out.println("Article trouvé: " + article.getTitle());
+            return ResponseEntity.ok(article);
+        }
+
+        System.out.println("Article non trouvé pour le slug: " + slug);
+        return ResponseEntity.notFound().build();
+    }
+
     @PostMapping("/create")
+
     public ResponseEntity<Article> create(@RequestBody @Validated Article newArticle) {
+        String slug = newArticle.getTitle().toLowerCase().replaceAll(" ", "-");
+        newArticle.setSlug(slug); // Assigner le slug à l'article
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         newArticle.setEditionDate(localDateTimeNow);
         Article createArticle = articleRepository.save(newArticle);
@@ -192,29 +201,35 @@ public class ArticleController {
         return ResponseEntity.ok(updatedArticle);
     }
 
+    @Autowired
+    private RatingRepository ratingRepository;
+
     @PutMapping("/{id}/add-rating")
     public ResponseEntity<Article> addRating(
             @PathVariable UUID id,
             @RequestBody Map<String, Float> payload) {
         Float newRating = payload.get("rating");
+        if (newRating == null || newRating < 0 || newRating > 5) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid rating value");
+        }
+
         Article article = articleRepository.findById(id)
                 .orElseThrow(
                         () -> new ResponseStatusException(
                                 HttpStatus.NOT_FOUND, "Article Not Found: " + id));
 
-        Float currentRating = article.getRating();
-        if (currentRating == null) {
-            currentRating = 0.0f;
-        }
+        // Créer et sauvegarder la nouvelle note
+        Rating rating = new Rating();
+        rating.setArticle(article);
+        rating.setRating(Math.round(newRating * 10.0f) / 10.0f);
 
-        Float sumOfRatings = currentRating + newRating;
+        // Sauvegarder d'abord le rating
+        ratingRepository.save(rating);
 
-        Float averageRating = sumOfRatings / 2; // Nous avons seulement deux notes : l'actuelle et la nouvelle
-
-        // Arrondissez la moyenne à un chiffre après la virgule
-        float roundedAverage = Math.round(averageRating * 10.0f) / 10.0f;
-
-        article.setRating(roundedAverage);
+        // Ajouter à la liste des ratings et recalculer
+        article.getRatings().add(rating);
+        float averageRating = article.calculateAverageRating();
+        article.setAverageRating(averageRating);
 
         Article updatedArticle = articleRepository.save(article);
 

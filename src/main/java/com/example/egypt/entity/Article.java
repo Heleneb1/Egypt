@@ -18,7 +18,7 @@ import java.util.UUID;
 // cette ligne sur user
 @Entity
 
-@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class,property = "id")
+@JsonIdentityInfo(generator = ObjectIdGenerators.UUIDGenerator.class, property = "id")
 
 @Table(name = "article")
 public class Article {
@@ -30,12 +30,14 @@ public class Article {
     @Column(nullable = false, name = "title")
     private String title;
     @Lob
-    @Column(nullable = false, name = "content", length = 10000)
+    @Column(nullable = false, name = "content", columnDefinition = "LONGTEXT")
     private String content;
     @Column(nullable = true, name = "creation_date")
     private LocalDateTime creationDate;
     @Column(nullable = true, name = "edition_date")
     private LocalDateTime editionDate;
+    @Column(nullable = false, unique = true)
+    private String slug;
 
     public LocalDateTime getEditionDate() {
         return editionDate;
@@ -45,8 +47,6 @@ public class Article {
         this.editionDate = editionDate;
     }
 
-    @Column(nullable = true, name = "rating")
-    private Float rating;
     @Column(nullable = false, name = "tag")
     private String tag;
     @Column(nullable = false, name = "author")
@@ -61,24 +61,25 @@ public class Article {
     @Column(name = "comment")
     @OneToMany(mappedBy = "article", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Comment> comments = new ArrayList<>();
-    // @OneToMany(mappedBy = "article", cascade = CascadeType.ALL)
-    // @JsonIgnore // Exclure la sérialisation des commentaires
-    // private List<Comment> comments;
-    @OneToMany(mappedBy = "article", cascade = CascadeType.REMOVE)
-    private List<Rating> ratings;
+    @OneToMany(mappedBy = "article", cascade = CascadeType.ALL) // Changez REMOVE en ALL pour conserver les notes
+    private List<Rating> ratings = new ArrayList<>(); // Initialisez avec une ArrayList vide
+
+    // Ajoutez un champ pour la note moyenne
+    @Column(nullable = true, name = "average_rating", columnDefinition = "FLOAT DEFAULT 3.5")
+    private Float averageRating = 3.5f;
 
     public Article() {
     }
 
     public Article(UUID id, String title, String content, LocalDateTime creationDate, LocalDateTime editionDate,
-                   Float rating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments,
-                   String author) {
+            Float averageRating, String tag, List<Quiz> quizzes, Boolean archive, List<Comment> comments,
+            String author) {
         this.id = id;
         this.title = title;
         this.content = content;
         this.creationDate = creationDate;
         this.editionDate = editionDate;
-        this.rating = rating;
+        this.averageRating = averageRating;
         this.tag = tag;
         this.quizzes = quizzes;
         this.archive = archive;
@@ -119,12 +120,12 @@ public class Article {
         this.creationDate = creationDate;
     }
 
-    public Float getRating() {
-        return rating;
+    public Float getAverageRating() {
+        return averageRating;
     }
 
-    public void setRating(Float rating) {
-        this.rating = rating;
+    public void setAverageRating(float averageRating) {
+        this.averageRating = averageRating;
     }
 
     public String getTag() {
@@ -159,13 +160,13 @@ public class Article {
         this.comments = comments;
     }
 
-//    public List<Rating> getRatings() {
-//        return ratings;
-//    }
-//
-//    public void setRatings(List<Rating> ratings) {
-//        this.ratings = ratings;
-//    }
+    public List<Rating> getRatings() {
+        return ratings;
+    }
+
+    public void setRatings(List<Rating> ratings) {
+        this.ratings = ratings;
+    }
 
     public String getAuthor() {
         return author;
@@ -181,6 +182,33 @@ public class Article {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getSlug() {
+        return slug;
+    }
+
+    public void setSlug(String slug) {
+        this.slug = slug;
+    }
+
+    public void generateSlug() {
+        if (this.title == null || this.title.isEmpty()) {
+            this.slug = UUID.randomUUID().toString(); // Génère un slug unique si le titre est vide
+        } else {
+            this.slug = this.title.toLowerCase().replaceAll("[^a-z0-9\\s]", "").replaceAll("\\s+", "-");
+        }
+    }
+
+    public float calculateAverageRating() {
+        if (this.ratings == null || this.ratings.isEmpty()) {
+            return 3.5f; // Valeur par défaut
+        }
+
+        return (float) this.ratings.stream()
+                .mapToDouble(Rating::getRating)
+                .average()
+                .orElse(3.5);
     }
 
 }

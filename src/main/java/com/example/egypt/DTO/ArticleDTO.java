@@ -18,32 +18,31 @@ public record ArticleDTO(
         String tag,
         String author,
         String image,
+        String slug,
         @JsonIgnore List<Quiz> quizzes,
         Boolean archive,
-
-        @JsonIgnore List<Comment> comments,
-        Float ratings) {
-    public LocalDateTime setEditionDate(LocalDateTime localDateTimeNow) {
-        return localDateTimeNow;
-    }
-
+        Float averageRating, // Ajout de la moyenne
+        List<Comment> comments,
+        @JsonIgnore List<Rating> ratings) {
+            
+    // Méthode pour obtenir les ids des quiz associés
     public List<UUID> getQuizzesIds(List<Quiz> quizzes) {
         return quizzes.stream()
                 .map(Quiz::getId)
                 .collect(Collectors.toList());
     }
 
+    // Méthode pour obtenir les ids des commentaires associés
     public Set<UUID> getCommentsIds(Set<Comment> comments) {
         return comments.stream()
                 .map(Comment::getId)
                 .collect(Collectors.toSet());
     }
 
-//    public List<UUID> getRatingsIds(List<Rating> ratings) {
-//        return ratings.stream()
-//                .map(Rating::getId)
-//                .collect(Collectors.toList());
-//    }
-
-
+    // Méthode pour obtenir les ids des notes
+    public List<UUID> getRatingsIds(List<Rating> ratings) {
+        return ratings.stream()
+                .map(Rating::getId)
+                .collect(Collectors.toList());
+    }
 }

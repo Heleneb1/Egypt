@@ -20,4 +20,6 @@ public interface ArticleRepository extends JpaRepository<Article, UUID> {
 
     List<Article> findByQuizzesId(UUID quizId);
 
+    Article findBySlug(String slug);
+
 }

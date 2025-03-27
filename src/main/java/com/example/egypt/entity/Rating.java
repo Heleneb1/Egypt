@@ -6,7 +6,6 @@ import jakarta.persistence.*;
 
 import java.util.UUID;
 
-
 @Entity
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Table(name = "rating")
@@ -26,7 +25,7 @@ public class Rating {
     @JoinColumn(name = "article_id")
     private Article article;
     @Column(nullable = false)
-    private int rating;
+    private float rating;
 
     public Rating() {
     }
@@ -71,13 +70,11 @@ public class Rating {
         this.article = article;
     }
 
-    public int getRating() {
+    public float getRating() {
         return rating;
     }
 
-    public void setRating(int rating) {
+    public void setRating(float rating) {
         this.rating = rating;
     }
 }
-
-

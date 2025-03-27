@@ -1,13 +1,11 @@
 package com.example.egypt.controller;
 
-import com.example.egypt.DTO.ArticleDTO;
 import com.example.egypt.DTO.TopicDTO;
 import com.example.egypt.DTOMapper.TopicDTOMapper;
 import com.example.egypt.entity.*;
 import com.example.egypt.repository.AnswerRepository;
 import com.example.egypt.repository.TopicRepository;
 import com.example.egypt.repository.UserRepository;
-import com.example.egypt.services.ArticleService;
 import com.example.egypt.services.BeanUtils;
 import com.example.egypt.services.TopicService;
 import org.springframework.http.HttpStatus;
@@ -27,20 +25,24 @@ public class TopicController {
     private UserRepository userRepository;
     private AnswerRepository answerRepository;
     private final TopicDTOMapper topicDTOMapper;
-    TopicController(TopicRepository topicRepository, UserRepository userRepository, AnswerRepository answerRepository, TopicDTOMapper topicDTOMapper){
-        this.topicRepository= topicRepository;
-        this.userRepository= userRepository;
-        this.answerRepository= answerRepository;
+
+    TopicController(TopicRepository topicRepository, UserRepository userRepository, AnswerRepository answerRepository,
+            TopicDTOMapper topicDTOMapper) {
+        this.topicRepository = topicRepository;
+        this.userRepository = userRepository;
+        this.answerRepository = answerRepository;
         this.topicDTOMapper = topicDTOMapper;
     }
-    //ok
+
+    // ok
     @GetMapping("")
     public List<TopicDTO> getAll() {
         TopicService topicService = new TopicService(
-                topicRepository,topicDTOMapper);
+                topicRepository, topicDTOMapper);
         List<TopicDTO> topicDTOS = topicService.findAll();
         return topicDTOS;
     }
+
     @GetMapping("/{id}")
     public TopicDTO getById(@PathVariable UUID id) {
         Topic topic = this.topicRepository.findById(id)
@@ -56,10 +58,9 @@ public class TopicController {
         return topics;
     }
 
-
-//ok
+    // ok
     @PostMapping("/{authorId}/create")
-    public ResponseEntity<Topic> create(@PathVariable UUID authorId, @RequestBody @Validated Topic newTopic){
+    public ResponseEntity<Topic> create(@PathVariable UUID authorId, @RequestBody @Validated Topic newTopic) {
         LocalDateTime localDateTimeNow = LocalDateTime.now();
         newTopic.setCreationDate(localDateTimeNow);
 
@@ -67,22 +68,21 @@ public class TopicController {
                 .findById(authorId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-
         newTopic.setAuthor(author);
-
 
         Topic createTopic = topicRepository.save(newTopic);
         return ResponseEntity.status(HttpStatus.CREATED).body(createTopic);
     }
-@PutMapping("/{id}")
-@ResponseStatus(HttpStatus.ACCEPTED)
-public Topic updateTopic(@PathVariable UUID id, @RequestBody Topic topicUpdated) {
-   Topic existingTopic = this.topicRepository.findById(id)
-           .orElseThrow(()-> new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found for update id:" + id));
-    BeanUtils.copyNonNullProperties(topicUpdated, existingTopic);
-    return this.topicRepository.save(existingTopic);
-}
 
+    @PutMapping("/{id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public Topic updateTopic(@PathVariable UUID id, @RequestBody Topic topicUpdated) {
+        Topic existingTopic = this.topicRepository.findById(id)
+                .orElseThrow(
+                        () -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Topic not found for update id:" + id));
+        BeanUtils.copyNonNullProperties(topicUpdated, existingTopic);
+        return this.topicRepository.save(existingTopic);
+    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable UUID id) {

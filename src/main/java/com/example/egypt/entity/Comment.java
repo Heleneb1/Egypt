@@ -1,15 +1,16 @@
 package com.example.egypt.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+// import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+// import com.fasterxml.jackson.annotation.JsonManagedReference;
+// import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-//@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+// @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class,
+// property = "id")
 @Table(name = "comment")
 public class Comment {
     @Id
@@ -23,7 +24,6 @@ public class Comment {
 
     @Column(nullable = false, name = "archive", columnDefinition = "TINYINT DEFAULT 0")
     private Boolean archive;
-
 
     @ManyToOne
     @JoinColumn(name = "author_id")
@@ -41,7 +41,7 @@ public class Comment {
     }
 
     public Comment(UUID id, String content, LocalDateTime creationDate, Boolean archive, User author, Quiz quiz,
-                   Article article) {
+            Article article) {
         this.id = id;
         this.content = content;
         this.creationDate = creationDate;
@@ -100,8 +100,8 @@ public class Comment {
         this.quiz = quiz;
     }
 
-    public Article getArticle()  {
-             System.out.println("Article"+article);
+    public Article getArticle() {
+        System.out.println("Article" + article);
 
         return article;
     }

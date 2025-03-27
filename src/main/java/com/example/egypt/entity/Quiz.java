@@ -1,7 +1,7 @@
 package com.example.egypt.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+// import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+// import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -45,10 +45,10 @@ public class Quiz {
     @ManyToMany(mappedBy = "quizzes")
     private List<Article> articles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)//pour supprimer les commentaires associés
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE) // pour supprimer les commentaires associés
     private List<Comment> comments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE)//supprime les notes associées
+    @OneToMany(mappedBy = "quiz", cascade = CascadeType.REMOVE) // supprime les notes associées
     private List<Rating> ratings = new ArrayList<>();
 
     @OneToMany(mappedBy = "quiz")
@@ -59,8 +59,8 @@ public class Quiz {
     }
 
     public Quiz(UUID id, String content, String title, String difficulty, LocalDateTime creationDate, String article,
-                String picture, Float rating, Boolean archive, User author, Badge badge, List<Article> articles,
-                List<Comment> comments, List<Rating> ratings, List<Question> questions) {
+            String picture, Float rating, Boolean archive, User author, Badge badge, List<Article> articles,
+            List<Comment> comments, List<Rating> ratings, List<Question> questions) {
         this.id = id;
         this.content = content;
         this.title = title;
