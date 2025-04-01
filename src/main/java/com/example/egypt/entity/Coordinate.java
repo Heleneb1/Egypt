@@ -1,11 +1,16 @@
 package com.example.egypt.entity;
 
-import jakarta.persistence.*;
-
 import java.util.UUID;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+
 @Entity
-@Table(name = "coodinate")
+@Table(name = "coordinate")
 public class Coordinate {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -16,12 +21,13 @@ public class Coordinate {
     private String longitude;
     @Column(nullable = false, name = "monument_name")
     private String monument_name;
-    @Column(nullable = false, name = "link",length = 1000)
+    @Column(nullable = false, name = "link", length = 1000)
     private String link;
-    @Column(nullable = true, name = "picture",length = 1000)
+    @Column(nullable = true, name = "picture", length = 1000)
     private String picture;
-@Column(nullable = false, name="auhor_picture")
-private String author_picture;
+    @Column(nullable = false, name = "auhor_picture")
+    private String author_picture;
+
     public Coordinate() {
     }
 
@@ -81,4 +87,3 @@ private String author_picture;
         this.author_picture = author_picture;
     }
 }
-

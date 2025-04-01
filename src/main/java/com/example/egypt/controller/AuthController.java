@@ -1,13 +1,5 @@
 package com.example.egypt.controller;
 
-import com.example.egypt.entity.Role;
-import com.example.egypt.entity.User;
-import com.example.egypt.repository.UserRepository;
-import com.example.egypt.services.TokenService;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,8 +7,22 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
+
+import com.example.egypt.entity.Role;
+import com.example.egypt.entity.User;
+import com.example.egypt.repository.UserRepository;
+import com.example.egypt.services.TokenService;
+
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -87,7 +93,8 @@ public class AuthController {
         cookie.setHttpOnly(true); // Empêche l'accès au cookie via JavaScript
 
         // Activer Secure seulement en production
-        boolean isProduction = request.getServerName().equals("new-app.lesmysteresdelegypteantique.fr");
+        boolean isProduction = request.getServerName().equals("new-app.lesmysteresdelegypteantique.fr")
+                || request.getServerName().equals("https://app.lesmysteresdelegypteantique.fr");
         System.out.println("En prod " + isProduction);
         cookie.setSecure(isProduction);
         cookie.setPath("/"); // Le cookie est accessible sur toute l'application
