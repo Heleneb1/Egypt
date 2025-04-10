@@ -1,15 +1,29 @@
 package com.example.egypt.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
-import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
+
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 // TODOquand j'active cette ligne, j'ai une erreur de compilation a la
 // creation d'un article : Cannot invoke "com.fasterxml.jackson.databind.deser.impl.ReadableObjectId.bindItem(Object)" because "roid" is null]
@@ -144,6 +158,16 @@ public class Article {
         this.quizzes = quizzes;
     }
 
+    public void addQuiz(Quiz quiz) {
+        if (!this.quizzes.contains(quiz)) {
+            this.quizzes.add(quiz);
+            quiz.getArticles().add(this); // seulement si tu as bien la liste d'articles dans Quiz
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Quiz already added to the article: " + quiz.getId());
+        }
+    }
+
     public Boolean getArchive() {
         return archive;
     }
@@ -209,6 +233,16 @@ public class Article {
                 .mapToDouble(Rating::getRating)
                 .average()
                 .orElse(3.5);
+    }
+
+    public void removeQuiz(Quiz quiz) {
+        if (this.quizzes.contains(quiz)) {
+            this.quizzes.remove(quiz);
+            quiz.getArticles().remove(this); // seulement si tu as bien la liste d'articles dans Quiz
+        } else {
+            throw new ResponseStatusException(
+                    HttpStatus.BAD_REQUEST, "Quiz not found in the article: " + quiz.getId());
+        }
     }
 
 }

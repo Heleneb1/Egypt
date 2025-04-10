@@ -1,12 +1,15 @@
 package com.example.egypt.DTO;
 
-import com.example.egypt.entity.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.example.egypt.entity.Article;
+import com.example.egypt.entity.Comment;
+import com.example.egypt.entity.Question;
+import com.example.egypt.entity.Rating;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public record QuizDTO(
         UUID id,

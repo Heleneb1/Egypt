@@ -15,7 +15,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addMapping("/**")
                 .allowedOrigins("https://new-app.lesmysteresdelegypteantique.fr",
                         "https://app.lesmysteresdelegypteantique.fr", "http://localhost:4200")
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
+                .allowedMethods("GET", "POST", "PATCH", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
                 .exposedHeaders("Content-Type", "Date", "Total-Count", "loginInfo", "Authorization")
                 .allowCredentials(true);

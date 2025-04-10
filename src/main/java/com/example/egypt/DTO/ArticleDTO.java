@@ -1,13 +1,15 @@
 package com.example.egypt.DTO;
 
-import com.example.egypt.entity.*;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
+
+import com.example.egypt.entity.Comment;
+import com.example.egypt.entity.Quiz;
+import com.example.egypt.entity.Rating;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 public record ArticleDTO(
         UUID id,
@@ -24,9 +26,9 @@ public record ArticleDTO(
         Float averageRating, // Ajout de la moyenne
         List<Comment> comments,
         @JsonIgnore List<Rating> ratings) {
-            
+
     // Méthode pour obtenir les ids des quiz associés
-    public List<UUID> getQuizzesIds(List<Quiz> quizzes) {
+    public List<UUID> getQuizzesIds() {
         return quizzes.stream()
                 .map(Quiz::getId)
                 .collect(Collectors.toList());

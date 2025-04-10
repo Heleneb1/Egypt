@@ -1,11 +1,12 @@
 package com.example.egypt.DTOMapper;
 
+import java.util.function.Function;
+
+import org.springframework.stereotype.Service;
+
 import com.example.egypt.DTO.ArticleDTO;
 import com.example.egypt.entity.Article;
 import com.example.egypt.entity.Rating;
-
-import org.springframework.stereotype.Service;
-import java.util.function.Function;
 
 @Service
 public class ArticleDTOMapper implements Function<Article, ArticleDTO> {

@@ -1,5 +1,25 @@
 package com.example.egypt.controller;
 
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
+
 import com.example.egypt.DTO.AddCommentsDTO;
 import com.example.egypt.DTO.ArticleDTO;
 import com.example.egypt.DTOMapper.ArticleDTOMapper;
@@ -15,18 +35,6 @@ import com.example.egypt.repository.RatingRepository;
 import com.example.egypt.repository.UserRepository;
 import com.example.egypt.services.ArticleService;
 import com.example.egypt.services.BeanUtils;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
-
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/articles")
@@ -180,11 +188,10 @@ public class ArticleController {
         return ResponseEntity.ok(updatedArticleDTO);
     }
 
-    @PutMapping("/{id}/quizzes/{quizId}/add-quizzes")
+    @PatchMapping("/{id}/quizzes/{quizId}/add-quiz")
     public ResponseEntity<Article> addQuizzes(
             @PathVariable UUID id,
-            @PathVariable UUID quizId,
-            @RequestBody @Validated Article addQuizzesArticle) {
+            @PathVariable UUID quizId) {
 
         Quiz quiz = quizRepository.findById(quizId).orElseThrow(
                 () -> new ResponseStatusException(
@@ -194,7 +201,27 @@ public class ArticleController {
                 () -> new ResponseStatusException(
                         HttpStatus.NOT_FOUND, "Article Not Found: " + id));
 
-        article.getQuizzes().add(quiz);
+        article.addQuiz(quiz); // juste cet appel 💎
+
+        Article updatedArticle = articleRepository.save(article);
+
+        return ResponseEntity.ok(updatedArticle);
+    }
+
+    @DeleteMapping("/{id}/quizzes/{quizId}/remove-quiz")
+    public ResponseEntity<Article> removeQuizzes(
+            @PathVariable UUID id,
+            @PathVariable UUID quizId) {
+
+        Quiz quiz = quizRepository.findById(quizId).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Quiz Not Found: " + quizId));
+
+        Article article = articleRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(
+                        HttpStatus.NOT_FOUND, "Article Not Found: " + id));
+
+        article.removeQuiz(quiz); // juste cet appel 💎
 
         Article updatedArticle = articleRepository.save(article);
 

@@ -69,7 +69,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(
                 Arrays.asList("http://localhost:4200", "https://new-app.lesmysteresdelegypteantique.fr",
                         "https://app.lesmysteresdelegypteantique.fr"));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST","PATCH", "PUT", "DELETE", "HEAD", "OPTIONS"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setExposedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
         configuration.setAllowCredentials(true);
