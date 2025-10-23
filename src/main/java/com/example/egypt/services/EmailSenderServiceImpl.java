@@ -37,7 +37,8 @@ public class EmailSenderServiceImpl implements EmailSenderService {
             emailSender.send(message);
 
             SimpleMailMessage responseMessage = new SimpleMailMessage();
-            responseMessage.setFrom("noreply@mysteresegypteantique.com");
+            responseMessage.setFrom(adminEmail);
+            ;
             responseMessage.setTo(fromAddress);
             responseMessage.setSubject("Re : Nous avons reçu votre message");
             responseMessage.setText("Bonjour " + name + " 👋,\n\n" +
