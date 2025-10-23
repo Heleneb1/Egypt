@@ -88,22 +88,20 @@ public class AuthController {
         if (jwt == null) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid username/password supplied");
         }
-        // Ajouter le JWT dans un cookie HTTP-Only sécurisé
-        Cookie cookie = new Cookie("auth_token", jwt);
-        cookie.setHttpOnly(true); // Empêche l'accès au cookie via JavaScript
 
         // Activer Secure seulement en production
-        boolean isProduction = request.getServerName().equals("new-app.lesmysteresdelegypteantique.fr")
-                || request.getServerName().equals("https://app.lesmysteresdelegypteantique.fr");
+        boolean isProduction = request.getServerName().equals("https://app.lesmysteresdelegypteantique.fr");
         System.out.println("En prod " + isProduction);
-        cookie.setSecure(isProduction);
-        cookie.setPath("/"); // Le cookie est accessible sur toute l'application
-        cookie.setMaxAge(2 * 60 * 60); // Durée d'expiration du cookie (2 heures par exemple)
-        cookie.setAttribute("SameSite", "None"); // Cross-origin autorisé
-        // // Retourner l'utilisateur
-        // return (User) authentication.getPrincipal();
+        String cookieHeader = "auth_token=" + jwt + "; HttpOnly=false; Path=/; Max-Age="
+                + (2 * 60 * 60);
+        if (isProduction) {
+            cookieHeader += "; Secure; SameSite=None";
+        } else {
+            cookieHeader += "; SameSite=None"; // fonctionne en local
+        }
+        response.setHeader("Set-Cookie", cookieHeader);
         response.setHeader("Authorization", "Bearer " + jwt);
-        response.addCookie(cookie);
+
         System.out.println("Connexion réussie");
         return (User) authentication.getPrincipal();
     }

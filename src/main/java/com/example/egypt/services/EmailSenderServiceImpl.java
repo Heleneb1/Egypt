@@ -1,12 +1,12 @@
 package com.example.egypt.services;
 
-import com.example.egypt.entity.MessageType;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
+
+import com.example.egypt.entity.MessageType;
 
 @Service
 public class EmailSenderServiceImpl implements EmailSenderService {
@@ -26,26 +26,32 @@ public class EmailSenderServiceImpl implements EmailSenderService {
     }
 
     @Override
-    public void sendEmail(
-            String name,
-            String fromAddress,
-            String body) throws Exception {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom(adminEmail); // Utilisez l'adresse de l'administrateur comme expéditeur
-        message.setTo(adminEmail); // Adresse de destination (c'est aussi l'adresse de l'administrateur)
-        message.setSubject("Les Mystères de l'Égypte Antique : nouveau message de " + name);
-        message.setText("De : " + fromAddress + "\n" + body); // Ajoutez l'adresse de l'expéditeur dans le corps
-        emailSender.send(message);
+    public void sendEmail(String name, String fromAddress, String body) throws Exception {
+        try {
+            SimpleMailMessage message = new SimpleMailMessage();
+            message.setFrom(adminEmail);
+            System.out.println("ADMIN_EMAIL = " + adminEmail);
+            message.setTo(adminEmail);
+            message.setSubject("Les Mystères de l'Égypte Antique : nouveau message de " + name);
+            message.setText("De : " + fromAddress + "\n" + body);
+            emailSender.send(message);
 
-        SimpleMailMessage responseMessage = new SimpleMailMessage();
-        responseMessage.setFrom("noreply@mysteresegypteantique.com"); // Remplacez par l'adresse de l'administrateur
-        responseMessage.setTo(fromAddress); // Adresse de l'expéditeur
-        responseMessage.setSubject("Re : Nous avons reçu votre message ");
-        responseMessage
-                .setText("Merci pour votre message " + name + ".\n\nNotre Scribe vous répondra dès que possible." +
-                        "\n\nLes Mystères de l'Égypte Antique");
+            SimpleMailMessage responseMessage = new SimpleMailMessage();
+            responseMessage.setFrom("noreply@mysteresegypteantique.com");
+            responseMessage.setTo(fromAddress);
+            responseMessage.setSubject("Re : Nous avons reçu votre message");
+            responseMessage.setText("Bonjour " + name + " 👋,\n\n" +
+                    "Merci pour ton message ! 📨\n" +
+                    "Notre scribe a bien reçu ton papyrus et te répondra dès que possible.\n\n" +
+                    "En attendant, que les dieux de l'Égypte veillent sur toi ☀️🐪.\n\n" +
+                    "L’équipe des Mystères de l’Égypte Antique");
+            emailSender.send(responseMessage);
 
-        emailSender.send(responseMessage);
+            System.out.println("✅ Email envoyé avec succès !");
+        } catch (Exception e) {
+            e.printStackTrace(); // <--- ça affichera la vraie cause dans la console
+            throw e; // pour continuer à renvoyer le 500 côté front
+        }
     }
 
     @Override
